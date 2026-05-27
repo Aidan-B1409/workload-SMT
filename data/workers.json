@@ -1,0 +1,47 @@
+[
+  {
+    "worker_id": "laptop",
+    "device_name": "MacBook Pro 14-inch (M3 Pro)",
+    "provides": {
+      "CPU": 2,
+      "GPU": 0
+    },
+    "location": "local"
+  },
+  {
+    "worker_id": "workstation",
+    "device_name": "Dell Precision 5820",
+    "provides": {
+      "CPU": 8,
+      "GPU": 0
+    },
+    "location": "on_premises"
+  },
+  {
+    "worker_id": "cloud_cpu",
+    "device_name": "AWS c6i.4xlarge",
+    "provides": {
+      "CPU": 8,
+      "GPU": 0
+    },
+    "location": "cloud_aws"
+  },
+  {
+    "worker_id": "cloud_gpu_1",
+    "device_name": "AWS p3.2xlarge",
+    "provides": {
+      "CPU": 8,
+      "GPU": 1
+    },
+    "location": "cloud_aws"
+  },
+  {
+    "worker_id": "cloud_gpu_2",
+    "device_name": "GCP n1-standard-8 + T4",
+    "provides": {
+      "CPU": 8,
+      "GPU": 1
+    },
+    "location": "cloud_gcp"
+  }
+]

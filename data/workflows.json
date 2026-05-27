@@ -1,0 +1,6837 @@
+[
+  {
+    "task_id": "dac_ml-regression-010",
+    "task_description": "Utilize the comprehensive drug ratings dataset to predict the usefulness of drugs listed in drugsComTest_raw.csv. Write the predictions into \"Usefulness.csv\" with the column name \"usefulness\".",
+    "dag_nodes": [
+      {
+        "id": "load_train",
+        "name": "Load Train Data",
+        "description": "Reads drugsComTrain_raw.csv into memory as the training dataset.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "load_test",
+        "name": "Load Test Data",
+        "description": "Reads drugsComTest_raw.csv into memory as the test dataset.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "derive_target",
+        "name": "Derive Target Variable",
+        "description": "Creates the binary 'usefulness' label on the training set by mapping rating values against a threshold (e.g., rating >= 7 \u2192 useful).",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "impute_text_train",
+        "name": "Impute Missing Text Train",
+        "description": "Fills missing values in benefitsReview, sideEffectsReview, and commentsReview with empty strings in the training set.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "impute_text_test",
+        "name": "Impute Missing Text Test",
+        "description": "Fills missing values in benefitsReview, sideEffectsReview, and commentsReview with empty strings in the test set.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "encode_structured_train",
+        "name": "Encode Structured Features Train",
+        "description": "Applies ordinal encoding to effectiveness and sideEffects, and target/frequency encoding to condition and urlDrugName on the training set, fitting all encoders on train data.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "encode_structured_test",
+        "name": "Encode Structured Features Test",
+        "description": "Transforms test set categorical columns using the encoders fitted on the training set.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "concat_text_train",
+        "name": "Concatenate Review Text Train",
+        "description": "Concatenates benefitsReview, sideEffectsReview, and commentsReview into a single text field for each training row.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "concat_text_test",
+        "name": "Concatenate Review Text Test",
+        "description": "Concatenates benefitsReview, sideEffectsReview, and commentsReview into a single text field for each test row.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "tfidf_vectorize",
+        "name": "TF-IDF Vectorization",
+        "description": "Fits a TF-IDF vectorizer on the concatenated training text and transforms both training and test text into sparse numeric matrices.",
+        "processing_time": 60,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "truncated_svd",
+        "name": "Truncated SVD",
+        "description": "Fits TruncatedSVD (LSA) on the training TF-IDF matrix to reduce dimensionality and transforms both train and test TF-IDF matrices.",
+        "processing_time": 90,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "feature_union_train",
+        "name": "Feature Union Train",
+        "description": "Horizontally stacks the structured encoded features and the SVD-reduced text features into a single training feature matrix.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "feature_union_test",
+        "name": "Feature Union Test",
+        "description": "Horizontally stacks the structured encoded features and the SVD-reduced text features into a single test feature matrix.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "cross_validate",
+        "name": "Cross Validate Model",
+        "description": "Performs k-fold cross-validation on the training feature matrix using a LightGBM classifier to evaluate and tune model performance.",
+        "processing_time": 150,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model",
+        "name": "Train Gradient Boosting Model",
+        "description": "Trains the final LightGBM classifier on the full training feature matrix using the tuned hyperparameters.",
+        "processing_time": 200,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "predict",
+        "name": "Generate Predictions",
+        "description": "Applies the trained model to the test feature matrix to produce 'usefulness' predictions and writes them to Usefulness.csv.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      }
+    ],
+    "dag_edges": [
+      {
+        "from": "load_train",
+        "to": "derive_target",
+        "data": [
+          "train_raw_df"
+        ]
+      },
+      {
+        "from": "load_train",
+        "to": "impute_text_train",
+        "data": [
+          "train_raw_df"
+        ]
+      },
+      {
+        "from": "load_test",
+        "to": "impute_text_test",
+        "data": [
+          "test_raw_df"
+        ]
+      },
+      {
+        "from": "derive_target",
+        "to": "train_model",
+        "data": [
+          "usefulness_labels"
+        ]
+      },
+      {
+        "from": "derive_target",
+        "to": "cross_validate",
+        "data": [
+          "usefulness_labels"
+        ]
+      },
+      {
+        "from": "impute_text_train",
+        "to": "encode_structured_train",
+        "data": [
+          "train_imputed_df"
+        ]
+      },
+      {
+        "from": "impute_text_train",
+        "to": "concat_text_train",
+        "data": [
+          "train_imputed_df"
+        ]
+      },
+      {
+        "from": "impute_text_test",
+        "to": "encode_structured_test",
+        "data": [
+          "test_imputed_df"
+        ]
+      },
+      {
+        "from": "impute_text_test",
+        "to": "concat_text_test",
+        "data": [
+          "test_imputed_df"
+        ]
+      },
+      {
+        "from": "encode_structured_train",
+        "to": "encode_structured_test",
+        "data": [
+          "fitted_encoders"
+        ]
+      },
+      {
+        "from": "encode_structured_train",
+        "to": "feature_union_train",
+        "data": [
+          "train_structured_features"
+        ]
+      },
+      {
+        "from": "encode_structured_test",
+        "to": "feature_union_test",
+        "data": [
+          "test_structured_features"
+        ]
+      },
+      {
+        "from": "concat_text_train",
+        "to": "tfidf_vectorize",
+        "data": [
+          "train_combined_text"
+        ]
+      },
+      {
+        "from": "concat_text_test",
+        "to": "tfidf_vectorize",
+        "data": [
+          "test_combined_text"
+        ]
+      },
+      {
+        "from": "tfidf_vectorize",
+        "to": "truncated_svd",
+        "data": [
+          "train_tfidf_matrix",
+          "test_tfidf_matrix"
+        ]
+      },
+      {
+        "from": "truncated_svd",
+        "to": "feature_union_train",
+        "data": [
+          "train_svd_features"
+        ]
+      },
+      {
+        "from": "truncated_svd",
+        "to": "feature_union_test",
+        "data": [
+          "test_svd_features"
+        ]
+      },
+      {
+        "from": "feature_union_train",
+        "to": "cross_validate",
+        "data": [
+          "train_feature_matrix"
+        ]
+      },
+      {
+        "from": "feature_union_train",
+        "to": "train_model",
+        "data": [
+          "train_feature_matrix"
+        ]
+      },
+      {
+        "from": "cross_validate",
+        "to": "train_model",
+        "data": [
+          "tuned_hyperparameters"
+        ]
+      },
+      {
+        "from": "train_model",
+        "to": "predict",
+        "data": [
+          "trained_model"
+        ]
+      },
+      {
+        "from": "feature_union_test",
+        "to": "predict",
+        "data": [
+          "test_feature_matrix"
+        ]
+      }
+    ],
+    "workers": [
+      "laptop",
+      "workstation",
+      "cloud_cpu",
+      "cloud_gpu_1",
+      "cloud_gpu_2"
+    ]
+  },
+  {
+    "task_id": "dac_ml-competition-010",
+    "task_description": "Participate in the crab age prediction competition and leverage the additional dataset of crab ages to improve your method. Develop and refine your approach to achieve higher accuracy in predicting crab ages. Ensure your prediction results are saved in submission.csv, formatted according to 'sample_submission.csv'.\n",
+    "dag_nodes": [
+      {
+        "id": "load_data",
+        "name": "Load Data",
+        "description": "Loads competition train, competition test, additional crab age dataset, and sample submission CSV files into dataframes.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "align_schemas",
+        "name": "Align Schemas",
+        "description": "Aligns column names and data types of the additional crab age dataset to match the competition training dataset schema before concatenation.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "concatenate_training_data",
+        "name": "Concatenate Training Data",
+        "description": "Concatenates the schema-aligned additional dataset with the competition training data to maximise training sample size.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "outlier_removal",
+        "name": "Outlier Removal",
+        "description": "Removes extreme outliers from the combined training set using IQR-based filtering on the target Age and key morphological features to reduce label noise.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "median_imputation",
+        "name": "Median Imputation",
+        "description": "Fits median imputation on the cleaned training set and applies it to both training and test feature columns to handle missing values.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "categorical_encoding",
+        "name": "Categorical Encoding",
+        "description": "Applies ordinal/label encoding to low-cardinality categorical features such as Sex on both training and test sets.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "feature_engineering",
+        "name": "Feature Engineering",
+        "description": "Creates interaction and ratio features such as weight ratios and volume proxies from crab dimensions on both training and test sets to capture nonlinear biological relationships.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "kfold_cv_tuning",
+        "name": "K-Fold CV and Hyperparameter Tuning",
+        "description": "Performs k-fold cross-validation on the combined training set to tune hyperparameters for LightGBM, XGBoost, and CatBoost models independently.",
+        "processing_time": 180,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_lgbm",
+        "name": "Train LightGBM",
+        "description": "Trains a LightGBM gradient boosting regressor on the full engineered training set using tuned hyperparameters.",
+        "processing_time": 200,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_xgboost",
+        "name": "Train XGBoost",
+        "description": "Trains an XGBoost gradient boosting regressor on the full engineered training set using tuned hyperparameters.",
+        "processing_time": 200,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_catboost",
+        "name": "Train CatBoost",
+        "description": "Trains a CatBoost gradient boosting regressor on the full engineered training set using tuned hyperparameters.",
+        "processing_time": 200,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "predict_lgbm",
+        "name": "Predict LightGBM",
+        "description": "Generates raw age predictions on the engineered test set using the trained LightGBM model.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "predict_xgboost",
+        "name": "Predict XGBoost",
+        "description": "Generates raw age predictions on the engineered test set using the trained XGBoost model.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "predict_catboost",
+        "name": "Predict CatBoost",
+        "description": "Generates raw age predictions on the engineered test set using the trained CatBoost model.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "ensemble_blend",
+        "name": "Ensemble Blend",
+        "description": "Averages predictions from LightGBM, XGBoost, and CatBoost to produce a single blended prediction per test sample.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "generate_submission",
+        "name": "Generate Submission",
+        "description": "Rounds blended predictions to the nearest integer, aligns with sample submission IDs, and writes the final submission.csv file.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      }
+    ],
+    "dag_edges": [
+      {
+        "from": "load_data",
+        "to": "align_schemas",
+        "data": [
+          "competition_train_df",
+          "additional_crab_df"
+        ]
+      },
+      {
+        "from": "load_data",
+        "to": "generate_submission",
+        "data": [
+          "sample_submission_df"
+        ]
+      },
+      {
+        "from": "load_data",
+        "to": "median_imputation",
+        "data": [
+          "competition_test_df"
+        ]
+      },
+      {
+        "from": "align_schemas",
+        "to": "concatenate_training_data",
+        "data": [
+          "aligned_train_df",
+          "aligned_additional_df"
+        ]
+      },
+      {
+        "from": "concatenate_training_data",
+        "to": "outlier_removal",
+        "data": [
+          "combined_train_df"
+        ]
+      },
+      {
+        "from": "outlier_removal",
+        "to": "median_imputation",
+        "data": [
+          "cleaned_train_df"
+        ]
+      },
+      {
+        "from": "median_imputation",
+        "to": "categorical_encoding",
+        "data": [
+          "imputed_train_df",
+          "imputed_test_df"
+        ]
+      },
+      {
+        "from": "categorical_encoding",
+        "to": "feature_engineering",
+        "data": [
+          "encoded_train_df",
+          "encoded_test_df"
+        ]
+      },
+      {
+        "from": "feature_engineering",
+        "to": "kfold_cv_tuning",
+        "data": [
+          "engineered_train_df"
+        ]
+      },
+      {
+        "from": "feature_engineering",
+        "to": "train_lgbm",
+        "data": [
+          "engineered_train_df"
+        ]
+      },
+      {
+        "from": "feature_engineering",
+        "to": "train_xgboost",
+        "data": [
+          "engineered_train_df"
+        ]
+      },
+      {
+        "from": "feature_engineering",
+        "to": "train_catboost",
+        "data": [
+          "engineered_train_df"
+        ]
+      },
+      {
+        "from": "feature_engineering",
+        "to": "predict_lgbm",
+        "data": [
+          "engineered_test_df"
+        ]
+      },
+      {
+        "from": "feature_engineering",
+        "to": "predict_xgboost",
+        "data": [
+          "engineered_test_df"
+        ]
+      },
+      {
+        "from": "feature_engineering",
+        "to": "predict_catboost",
+        "data": [
+          "engineered_test_df"
+        ]
+      },
+      {
+        "from": "kfold_cv_tuning",
+        "to": "train_lgbm",
+        "data": [
+          "lgbm_best_params"
+        ]
+      },
+      {
+        "from": "kfold_cv_tuning",
+        "to": "train_xgboost",
+        "data": [
+          "xgboost_best_params"
+        ]
+      },
+      {
+        "from": "kfold_cv_tuning",
+        "to": "train_catboost",
+        "data": [
+          "catboost_best_params"
+        ]
+      },
+      {
+        "from": "train_lgbm",
+        "to": "predict_lgbm",
+        "data": [
+          "lgbm_model"
+        ]
+      },
+      {
+        "from": "train_xgboost",
+        "to": "predict_xgboost",
+        "data": [
+          "xgboost_model"
+        ]
+      },
+      {
+        "from": "train_catboost",
+        "to": "predict_catboost",
+        "data": [
+          "catboost_model"
+        ]
+      },
+      {
+        "from": "predict_lgbm",
+        "to": "ensemble_blend",
+        "data": [
+          "lgbm_predictions"
+        ]
+      },
+      {
+        "from": "predict_xgboost",
+        "to": "ensemble_blend",
+        "data": [
+          "xgboost_predictions"
+        ]
+      },
+      {
+        "from": "predict_catboost",
+        "to": "ensemble_blend",
+        "data": [
+          "catboost_predictions"
+        ]
+      },
+      {
+        "from": "ensemble_blend",
+        "to": "generate_submission",
+        "data": [
+          "blended_predictions"
+        ]
+      }
+    ],
+    "workers": [
+      "laptop",
+      "workstation",
+      "cloud_cpu",
+      "cloud_gpu_1",
+      "cloud_gpu_2"
+    ]
+  },
+  {
+    "task_id": "dsb_hu_005",
+    "task_description": "\nYou are required to solve an employee churn prediction task using the IBM HR Analytics Employee Attrition & Performance dataset from Kaggle\n\n1. **Input:** Load the dataset from the file `WA_Fn-UseC_-HR-Employee-Attrition.csv`. Identify any missing or anomalous values, and handle them appropriately through imputation or other means. Perform necessary data transformations, including encoding categorical variables, scaling numerical features, and addressing class imbalance using techniques like SMOTE.\n\n2. **Feature Engineering:** Conduct feature engineering to select relevant features and create new ones that may aid in predicting employee churn. \n\n3. **Dataset Splitting:** Split the dataset into training and testing sets, saving them as `data/train_set.csv` and `data/test_set.csv`.\n\n4. **Model Building:** Use the Random Forest algorithm to build a predictive model. Optimize the model through hyperparameter tuning using grid search or random search methods to find the best combination of parameters.\n\n5. **Evaluation:** Evaluate the model on the test set using metrics such as accuracy, precision, recall, F1-score, and ROC-AUC. Save the model's predictions in a CSV file at `results/predictions.csv` and the evaluation results in a CSV file at `results/evaluation_metrics.csv`. Save the trained model checkpoint at `models/random_forest_model.pkl`.\n\n6. **Reporting:** Generate a comprehensive report detailing the data preprocessing steps, feature engineering process, model selection and tuning, and evaluation results. Include visualizations such as feature importance plots, ROC curves, and confusion matrices to illustrate the model's performance. Discuss the potential business implications of the model's predictions. Save the report as a PDF file at `reports/model_report.pdf`.",
+    "dag_nodes": [
+      {
+        "id": "load_dataset",
+        "name": "Load Dataset",
+        "description": "Read the raw CSV file, inspect the schema, and confirm there are no missing values before any transformations.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "drop_uninformative_columns",
+        "name": "Drop Uninformative Columns",
+        "description": "Remove zero-variance constant columns (EmployeeCount, StandardHours, Over18) and the identifier column EmployeeNumber, which carry no predictive signal.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "outlier_capping",
+        "name": "Outlier Capping",
+        "description": "Apply IQR-based winsorization to all numeric features to cap extreme values that could distort model training.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "encode_target",
+        "name": "Encode Target Variable",
+        "description": "Binary-encode the Attrition column (Yes=1, No=0) to produce a numeric classification target.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "encode_binary_categoricals",
+        "name": "Binary Categorical Encoding",
+        "description": "Apply label encoding to two-class categorical columns (Gender, OverTime) to convert them to numeric without imposing ordinal structure.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "one_hot_encode_nominals",
+        "name": "One-Hot Encode Nominal Columns",
+        "description": "Apply one-hot encoding to multi-class nominal categoricals (BusinessTravel, Department, EducationField, JobRole, MaritalStatus) to avoid imposing ordinal relationships.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "feature_engineering",
+        "name": "Feature Engineering",
+        "description": "Derive new features \u2014 YearsPerCompany, TenureRatio, IncomePerYearsWorked, PromotionLag \u2014 to capture behavioral patterns relevant to attrition.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "scale_numeric_features",
+        "name": "Scale Numeric Features",
+        "description": "Apply StandardScaler to all continuous and integer numeric features to normalize their ranges across the full feature matrix.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "stratified_train_test_split",
+        "name": "Stratified Train-Test Split",
+        "description": "Split the dataset into training and test sets using stratified sampling on Attrition to preserve class proportions, saving train_set.csv and test_set.csv.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "smote_oversampling",
+        "name": "SMOTE Oversampling",
+        "description": "Apply SMOTE exclusively to the training set to oversample the minority attrition class and address class imbalance without leaking synthetic data into the test set.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "rf_feature_selection",
+        "name": "RF-Based Feature Selection",
+        "description": "Use SelectFromModel with a Random Forest to retain only features above the mean importance threshold, reducing noise in the feature matrix.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "hyperparameter_tuning",
+        "name": "Hyperparameter Tuning",
+        "description": "Run RandomizedSearchCV with stratified k-fold cross-validation to efficiently identify the best Random Forest hyperparameter combination.",
+        "processing_time": 180,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_random_forest",
+        "name": "Train Random Forest Model",
+        "description": "Fit the best estimator from hyperparameter search on the full SMOTE-augmented training set and save the model checkpoint as random_forest_model.pkl.",
+        "processing_time": 200,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model",
+        "name": "Model Evaluation",
+        "description": "Generate predictions on the held-out test set and compute accuracy, precision, recall, F1-score, and ROC-AUC as evaluation metrics.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "save_predictions_and_metrics",
+        "name": "Save Predictions and Metrics",
+        "description": "Write predictions.csv, evaluation_metrics.csv, and the serialized model pickle to their respective output paths.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "generate_pdf_report",
+        "name": "Generate PDF Report",
+        "description": "Programmatically compile a PDF report using matplotlib PdfPages combining preprocessing narrative, feature importance bar plot, ROC curve, confusion matrix heatmap, and SMOTE class-distribution plot.",
+        "processing_time": 8,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      }
+    ],
+    "dag_edges": [
+      {
+        "from": "load_dataset",
+        "to": "drop_uninformative_columns",
+        "data": [
+          "raw_dataframe"
+        ]
+      },
+      {
+        "from": "drop_uninformative_columns",
+        "to": "outlier_capping",
+        "data": [
+          "reduced_dataframe"
+        ]
+      },
+      {
+        "from": "outlier_capping",
+        "to": "encode_target",
+        "data": [
+          "winsorized_dataframe"
+        ]
+      },
+      {
+        "from": "outlier_capping",
+        "to": "encode_binary_categoricals",
+        "data": [
+          "winsorized_dataframe"
+        ]
+      },
+      {
+        "from": "encode_target",
+        "to": "one_hot_encode_nominals",
+        "data": [
+          "target_encoded_series"
+        ]
+      },
+      {
+        "from": "encode_binary_categoricals",
+        "to": "one_hot_encode_nominals",
+        "data": [
+          "binary_encoded_dataframe"
+        ]
+      },
+      {
+        "from": "one_hot_encode_nominals",
+        "to": "feature_engineering",
+        "data": [
+          "fully_encoded_dataframe"
+        ]
+      },
+      {
+        "from": "feature_engineering",
+        "to": "scale_numeric_features",
+        "data": [
+          "engineered_dataframe"
+        ]
+      },
+      {
+        "from": "scale_numeric_features",
+        "to": "stratified_train_test_split",
+        "data": [
+          "scaled_dataframe"
+        ]
+      },
+      {
+        "from": "stratified_train_test_split",
+        "to": "smote_oversampling",
+        "data": [
+          "X_train",
+          "y_train",
+          "train_set_csv"
+        ]
+      },
+      {
+        "from": "stratified_train_test_split",
+        "to": "evaluate_model",
+        "data": [
+          "X_test",
+          "y_test",
+          "test_set_csv"
+        ]
+      },
+      {
+        "from": "smote_oversampling",
+        "to": "rf_feature_selection",
+        "data": [
+          "X_train_resampled",
+          "y_train_resampled"
+        ]
+      },
+      {
+        "from": "rf_feature_selection",
+        "to": "hyperparameter_tuning",
+        "data": [
+          "X_train_selected",
+          "selected_feature_names"
+        ]
+      },
+      {
+        "from": "rf_feature_selection",
+        "to": "evaluate_model",
+        "data": [
+          "selected_feature_names"
+        ]
+      },
+      {
+        "from": "hyperparameter_tuning",
+        "to": "train_random_forest",
+        "data": [
+          "best_params",
+          "best_estimator"
+        ]
+      },
+      {
+        "from": "train_random_forest",
+        "to": "evaluate_model",
+        "data": [
+          "trained_model",
+          "random_forest_model_pkl"
+        ]
+      },
+      {
+        "from": "train_random_forest",
+        "to": "generate_pdf_report",
+        "data": [
+          "trained_model",
+          "feature_importances"
+        ]
+      },
+      {
+        "from": "evaluate_model",
+        "to": "save_predictions_and_metrics",
+        "data": [
+          "predictions_csv",
+          "evaluation_metrics_csv"
+        ]
+      },
+      {
+        "from": "evaluate_model",
+        "to": "generate_pdf_report",
+        "data": [
+          "predictions",
+          "roc_curve_data",
+          "confusion_matrix",
+          "evaluation_metrics"
+        ]
+      },
+      {
+        "from": "smote_oversampling",
+        "to": "generate_pdf_report",
+        "data": [
+          "class_distribution_before_smote",
+          "class_distribution_after_smote"
+        ]
+      },
+      {
+        "from": "save_predictions_and_metrics",
+        "to": "generate_pdf_report",
+        "data": []
+      },
+      {
+        "from": "generate_pdf_report",
+        "to": null,
+        "data": [
+          "model_report_pdf"
+        ]
+      }
+    ],
+    "workers": [
+      "laptop",
+      "workstation",
+      "cloud_cpu",
+      "cloud_gpu_1",
+      "cloud_gpu_2"
+    ]
+  },
+  {
+    "task_id": "dac_ml-competition-018",
+    "task_description": "Your task is to develop a method to detect AI-generated text using the dataset provided. Generate predictions for test_essays.csv based on competition rules. Format your results in submission.csv following the structure of sample_submission.csv.",
+    "dag_nodes": [
+      {
+        "id": "load_data",
+        "name": "Load Data",
+        "description": "Loads train_essays, test_essays, and sample_submission CSV files into dataframes for downstream processing.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "text_cleaning",
+        "name": "Text Cleaning",
+        "description": "Applies lowercasing and whitespace normalization to essay text in both train and test sets while retaining punctuation and casing signals.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "tfidf_vectorization",
+        "name": "TF-IDF Vectorization",
+        "description": "Fits word and character n-gram TF-IDF vectorizers on training text and transforms both train and test essays into sparse numeric feature matrices.",
+        "processing_time": 60,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "stylometric_feature_extraction",
+        "name": "Stylometric Feature Extraction",
+        "description": "Computes hand-crafted linguistic features including average word length, sentence length distribution, punctuation ratios, and vocabulary richness for train and test essays.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "feature_combination",
+        "name": "Feature Combination",
+        "description": "Horizontally concatenates TF-IDF sparse matrices with stylometric feature arrays to produce unified feature matrices for train and test sets.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "stratified_cv_evaluation",
+        "name": "Stratified CV Evaluation",
+        "description": "Performs stratified k-fold cross-validation on the training set using the ensemble of Logistic Regression and Multinomial Naive Bayes to estimate AUC performance.",
+        "processing_time": 150,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "logistic_regression_train",
+        "name": "Logistic Regression Train",
+        "description": "Trains a Logistic Regression classifier on the full combined training feature matrix with the generated labels.",
+        "processing_time": 120,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "naive_bayes_train",
+        "name": "Naive Bayes Train",
+        "description": "Trains a Multinomial Naive Bayes classifier on the full combined training feature matrix with the generated labels.",
+        "processing_time": 120,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "logistic_regression_predict",
+        "name": "Logistic Regression Predict",
+        "description": "Generates probability scores for the test set using the trained Logistic Regression model.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "naive_bayes_predict",
+        "name": "Naive Bayes Predict",
+        "description": "Generates probability scores for the test set using the trained Multinomial Naive Bayes model.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "ensemble_averaging",
+        "name": "Ensemble Averaging",
+        "description": "Averages the probability scores from Logistic Regression and Multinomial Naive Bayes predictions to produce a single ensemble probability per test essay.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "submission_formatting",
+        "name": "Submission Formatting",
+        "description": "Joins ensemble probabilities with test essay IDs aligned to the sample_submission format and writes the final submission CSV with id and generated columns.",
+        "processing_time": 8,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      }
+    ],
+    "dag_edges": [
+      {
+        "from": "load_data",
+        "to": "text_cleaning",
+        "data": [
+          "train_df",
+          "test_df",
+          "sample_submission_df"
+        ]
+      },
+      {
+        "from": "text_cleaning",
+        "to": "tfidf_vectorization",
+        "data": [
+          "train_text_cleaned",
+          "test_text_cleaned"
+        ]
+      },
+      {
+        "from": "text_cleaning",
+        "to": "stylometric_feature_extraction",
+        "data": [
+          "train_text_cleaned",
+          "test_text_cleaned"
+        ]
+      },
+      {
+        "from": "tfidf_vectorization",
+        "to": "feature_combination",
+        "data": [
+          "train_tfidf_matrix",
+          "test_tfidf_matrix"
+        ]
+      },
+      {
+        "from": "stylometric_feature_extraction",
+        "to": "feature_combination",
+        "data": [
+          "train_stylometric_features",
+          "test_stylometric_features"
+        ]
+      },
+      {
+        "from": "feature_combination",
+        "to": "stratified_cv_evaluation",
+        "data": [
+          "train_combined_features"
+        ]
+      },
+      {
+        "from": "load_data",
+        "to": "stratified_cv_evaluation",
+        "data": [
+          "train_labels"
+        ]
+      },
+      {
+        "from": "feature_combination",
+        "to": "logistic_regression_train",
+        "data": [
+          "train_combined_features"
+        ]
+      },
+      {
+        "from": "load_data",
+        "to": "logistic_regression_train",
+        "data": [
+          "train_labels"
+        ]
+      },
+      {
+        "from": "feature_combination",
+        "to": "naive_bayes_train",
+        "data": [
+          "train_combined_features"
+        ]
+      },
+      {
+        "from": "load_data",
+        "to": "naive_bayes_train",
+        "data": [
+          "train_labels"
+        ]
+      },
+      {
+        "from": "logistic_regression_train",
+        "to": "logistic_regression_predict",
+        "data": [
+          "lr_model"
+        ]
+      },
+      {
+        "from": "feature_combination",
+        "to": "logistic_regression_predict",
+        "data": [
+          "test_combined_features"
+        ]
+      },
+      {
+        "from": "naive_bayes_train",
+        "to": "naive_bayes_predict",
+        "data": [
+          "nb_model"
+        ]
+      },
+      {
+        "from": "feature_combination",
+        "to": "naive_bayes_predict",
+        "data": [
+          "test_combined_features"
+        ]
+      },
+      {
+        "from": "logistic_regression_predict",
+        "to": "ensemble_averaging",
+        "data": [
+          "lr_test_probabilities"
+        ]
+      },
+      {
+        "from": "naive_bayes_predict",
+        "to": "ensemble_averaging",
+        "data": [
+          "nb_test_probabilities"
+        ]
+      },
+      {
+        "from": "ensemble_averaging",
+        "to": "submission_formatting",
+        "data": [
+          "ensemble_probabilities"
+        ]
+      },
+      {
+        "from": "load_data",
+        "to": "submission_formatting",
+        "data": [
+          "test_ids",
+          "sample_submission_df"
+        ]
+      }
+    ],
+    "workers": [
+      "laptop",
+      "workstation",
+      "cloud_cpu",
+      "cloud_gpu_1",
+      "cloud_gpu_2"
+    ]
+  },
+  {
+    "task_id": "dac_ml-competition-012",
+    "task_description": "Design your method to predict CO2 emissions in the competition described in README.md. As a contestant, optimize your approach to accurately predict the data in test.csv. Submit your prediction results into submission.csv, following the format specified in sample_submission.csv.",
+    "dag_nodes": [
+      {
+        "id": "load_data",
+        "name": "Load Data",
+        "description": "Reads train.csv, test.csv, and sample_submission.csv into dataframes for downstream processing.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "parse_id_column",
+        "name": "Parse ID Column",
+        "description": "Splits the composite ID_LAT_LON_YEAR_WEEK string into separate latitude, longitude, year, and week number columns for both train and test sets.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "temporal_feature_engineering",
+        "name": "Temporal Feature Engineering",
+        "description": "Derives month estimate, year offset, and cyclical sine/cosine encodings of week number to capture seasonality and trend signals.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "geospatial_clustering",
+        "name": "Geospatial Clustering",
+        "description": "Fits k-means clustering on latitude/longitude from the combined train and test sets and assigns integer cluster labels to capture regional emission patterns.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "lag_rolling_features",
+        "name": "Lag and Rolling Feature Engineering",
+        "description": "Computes per-location lag features and rolling mean/std statistics ordered by year-week to capture autocorrelation in historical emissions.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "missing_value_imputation",
+        "name": "Missing Value Imputation",
+        "description": "Applies forward-fill then median imputation per location group to handle NaNs introduced by lag and rolling feature computation without leaking future information.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "target_transformation",
+        "name": "Target Transformation",
+        "description": "Applies log1p transformation to the training emission target variable to reduce skewness before model training.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_test_split_features",
+        "name": "Train Test Feature Split",
+        "description": "Separates the fully engineered dataset back into train and test feature matrices aligned with their respective emission targets and IDs.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "time_based_cv",
+        "name": "Time-Based Cross Validation",
+        "description": "Implements TimeSeriesSplit or GroupKFold by year-week to generate train/validation fold indices that prevent temporal data leakage during model evaluation.",
+        "processing_time": 150,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_lightgbm",
+        "name": "Train LightGBM Model",
+        "description": "Trains a LightGBM gradient boosted regressor on the log-transformed target using the time-based CV folds for hyperparameter validation.",
+        "processing_time": 200,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_xgboost",
+        "name": "Train XGBoost Model",
+        "description": "Trains an XGBoost gradient boosted regressor on the log-transformed target using the same time-based CV folds.",
+        "processing_time": 200,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_random_forest",
+        "name": "Train Random Forest Model",
+        "description": "Trains a Random Forest regressor on the log-transformed target using the same time-based CV folds.",
+        "processing_time": 200,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "ensemble_predictions",
+        "name": "Ensemble Predictions",
+        "description": "Blends LightGBM, XGBoost, and Random Forest test-set predictions via weighted averaging to reduce variance and improve generalization.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "inverse_transform_predictions",
+        "name": "Inverse Transform Predictions",
+        "description": "Applies expm1 inverse transformation to the blended predictions to convert log-space outputs back to original emission scale.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "generate_submission",
+        "name": "Generate Submission",
+        "description": "Joins inverse-transformed predictions with the original ID_LAT_LON_YEAR_WEEK identifiers following the sample_submission format and writes submission.csv.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      }
+    ],
+    "dag_edges": [
+      {
+        "from": "load_data",
+        "to": "parse_id_column",
+        "data": [
+          "train_df",
+          "test_df",
+          "sample_submission_df"
+        ]
+      },
+      {
+        "from": "parse_id_column",
+        "to": "temporal_feature_engineering",
+        "data": [
+          "train_parsed",
+          "test_parsed"
+        ]
+      },
+      {
+        "from": "temporal_feature_engineering",
+        "to": "geospatial_clustering",
+        "data": [
+          "train_temporal",
+          "test_temporal"
+        ]
+      },
+      {
+        "from": "geospatial_clustering",
+        "to": "lag_rolling_features",
+        "data": [
+          "train_clustered",
+          "test_clustered"
+        ]
+      },
+      {
+        "from": "lag_rolling_features",
+        "to": "missing_value_imputation",
+        "data": [
+          "train_lagged",
+          "test_lagged"
+        ]
+      },
+      {
+        "from": "missing_value_imputation",
+        "to": "target_transformation",
+        "data": [
+          "train_imputed",
+          "test_imputed"
+        ]
+      },
+      {
+        "from": "target_transformation",
+        "to": "train_test_split_features",
+        "data": [
+          "train_transformed",
+          "test_imputed"
+        ]
+      },
+      {
+        "from": "train_test_split_features",
+        "to": "time_based_cv",
+        "data": [
+          "X_train",
+          "y_train_log"
+        ]
+      },
+      {
+        "from": "train_test_split_features",
+        "to": "train_lightgbm",
+        "data": [
+          "X_train",
+          "X_test",
+          "y_train_log"
+        ]
+      },
+      {
+        "from": "train_test_split_features",
+        "to": "train_xgboost",
+        "data": [
+          "X_train",
+          "X_test",
+          "y_train_log"
+        ]
+      },
+      {
+        "from": "train_test_split_features",
+        "to": "train_random_forest",
+        "data": [
+          "X_train",
+          "X_test",
+          "y_train_log"
+        ]
+      },
+      {
+        "from": "time_based_cv",
+        "to": "train_lightgbm",
+        "data": [
+          "cv_fold_indices"
+        ]
+      },
+      {
+        "from": "time_based_cv",
+        "to": "train_xgboost",
+        "data": [
+          "cv_fold_indices"
+        ]
+      },
+      {
+        "from": "time_based_cv",
+        "to": "train_random_forest",
+        "data": [
+          "cv_fold_indices"
+        ]
+      },
+      {
+        "from": "train_lightgbm",
+        "to": "ensemble_predictions",
+        "data": [
+          "lgbm_test_predictions_log"
+        ]
+      },
+      {
+        "from": "train_xgboost",
+        "to": "ensemble_predictions",
+        "data": [
+          "xgb_test_predictions_log"
+        ]
+      },
+      {
+        "from": "train_random_forest",
+        "to": "ensemble_predictions",
+        "data": [
+          "rf_test_predictions_log"
+        ]
+      },
+      {
+        "from": "ensemble_predictions",
+        "to": "inverse_transform_predictions",
+        "data": [
+          "blended_predictions_log"
+        ]
+      },
+      {
+        "from": "inverse_transform_predictions",
+        "to": "generate_submission",
+        "data": [
+          "final_predictions"
+        ]
+      },
+      {
+        "from": "load_data",
+        "to": "generate_submission",
+        "data": [
+          "sample_submission_df"
+        ]
+      },
+      {
+        "from": "parse_id_column",
+        "to": "generate_submission",
+        "data": [
+          "test_ids"
+        ]
+      }
+    ],
+    "workers": [
+      "laptop",
+      "workstation",
+      "cloud_cpu",
+      "cloud_gpu_1",
+      "cloud_gpu_2"
+    ]
+  },
+  {
+    "task_id": "dac_ml-regression-023",
+    "task_description": "Design a method to predict the median house value using the California Housing Prices dataset. Predict the values for test.csv and fill the results in result.csv.",
+    "dag_nodes": [
+      {
+        "id": "load_train",
+        "name": "Load Train Dataset",
+        "description": "Reads the training CSV file into a dataframe with all raw features and the target column median_house_value.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "load_test",
+        "name": "Load Test Dataset",
+        "description": "Reads the test CSV file into a dataframe with all raw features excluding the target column.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "load_result_template",
+        "name": "Load Result Template",
+        "description": "Reads the result template CSV file to obtain the expected row order and structure for output predictions.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "feature_engineering_train",
+        "name": "Feature Engineering Train",
+        "description": "Derives rooms_per_household, bedrooms_per_room, and population_per_household ratio features from the raw training data to create more predictive inputs.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "feature_engineering_test",
+        "name": "Feature Engineering Test",
+        "description": "Derives the same ratio features (rooms_per_household, bedrooms_per_room, population_per_household) from the raw test data using identical logic.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "one_hot_encode_train",
+        "name": "One Hot Encode Train",
+        "description": "Applies one-hot encoding to the nominal categorical column ocean_proximity in the training set, producing explicit binary columns.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "one_hot_encode_test",
+        "name": "One Hot Encode Test",
+        "description": "Applies the same one-hot encoding schema learned from training to the test set ocean_proximity column, aligning columns.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "prepare_train_features_target",
+        "name": "Prepare Train Features and Target",
+        "description": "Separates the fully engineered and encoded training dataframe into the feature matrix X_train and the target vector y_train.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "cross_validation_tuning",
+        "name": "Cross Validation and Hyperparameter Tuning",
+        "description": "Performs k-fold cross-validation on the training set to evaluate and tune Gradient Boosting Regressor hyperparameters, selecting the best configuration.",
+        "processing_time": 180,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model",
+        "name": "Train Gradient Boosting Model",
+        "description": "Trains the Gradient Boosting Regressor with the best hyperparameters on the full training feature matrix and target vector.",
+        "processing_time": 200,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "predict",
+        "name": "Generate Predictions",
+        "description": "Applies the trained model to the encoded and engineered test feature matrix to produce median_house_value predictions.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "write_results",
+        "name": "Write Result Predictions",
+        "description": "Merges predictions into the result template, aligns rows to the expected output order, and writes the final predictions CSV file.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      }
+    ],
+    "dag_edges": [
+      {
+        "from": "load_train",
+        "to": "feature_engineering_train",
+        "data": [
+          "raw_train_df"
+        ]
+      },
+      {
+        "from": "load_test",
+        "to": "feature_engineering_test",
+        "data": [
+          "raw_test_df"
+        ]
+      },
+      {
+        "from": "feature_engineering_train",
+        "to": "one_hot_encode_train",
+        "data": [
+          "engineered_train_df"
+        ]
+      },
+      {
+        "from": "feature_engineering_test",
+        "to": "one_hot_encode_test",
+        "data": [
+          "engineered_test_df"
+        ]
+      },
+      {
+        "from": "one_hot_encode_train",
+        "to": "one_hot_encode_test",
+        "data": [
+          "ohe_schema"
+        ]
+      },
+      {
+        "from": "one_hot_encode_train",
+        "to": "prepare_train_features_target",
+        "data": [
+          "encoded_train_df"
+        ]
+      },
+      {
+        "from": "prepare_train_features_target",
+        "to": "cross_validation_tuning",
+        "data": [
+          "X_train",
+          "y_train"
+        ]
+      },
+      {
+        "from": "cross_validation_tuning",
+        "to": "train_model",
+        "data": [
+          "best_hyperparameters"
+        ]
+      },
+      {
+        "from": "prepare_train_features_target",
+        "to": "train_model",
+        "data": [
+          "X_train",
+          "y_train"
+        ]
+      },
+      {
+        "from": "train_model",
+        "to": "predict",
+        "data": [
+          "trained_model"
+        ]
+      },
+      {
+        "from": "one_hot_encode_test",
+        "to": "predict",
+        "data": [
+          "encoded_test_df"
+        ]
+      },
+      {
+        "from": "predict",
+        "to": "write_results",
+        "data": [
+          "predictions"
+        ]
+      },
+      {
+        "from": "load_result_template",
+        "to": "write_results",
+        "data": [
+          "result_template_df"
+        ]
+      }
+    ],
+    "workers": [
+      "laptop",
+      "workstation",
+      "cloud_cpu",
+      "cloud_gpu_1",
+      "cloud_gpu_2"
+    ]
+  },
+  {
+    "task_id": "dsb_hu_010",
+    "task_description": "\"Undertake a comprehensive analysis and construct a robust predictive model using the \"\"Housing Prices\"\" dataset from Kaggle  to forecast residential property values.\n\n1. **Data Import and Cleaning**: \n- **Input**: \"train.csv\" and \"test.csv\"\n- **Output**: \"\"cleaned_data.csv\"\" (the processed dataset after cleaning)\n\n2. **Predictive Model Development**:\n- **Input**: \"\"cleaned_data.csv\"\" (the dataset after cleaning)\n- **Output**: \"\"predicted_prices.csv\"\" (containing the predicted house prices along with actual values for comparison)\n\n\n3. **Model Evaluation**:\n- **Output**: \"\"model_evaluation_metrics.csv\"\" (including metrics such as Mean Absolute Error (MAE) and Root Mean Squared Error (RMSE))\n\n4. **Data Visualization**:\n- **Output**: \"\"visualizations.png\"\" (a compiled image featuring scatter plots, histograms, and box plots)\n\n5. **Comprehensive Report**:\n- **Output**: \"\"housing_prices_analysis_report.pdf\"\" (a detailed report encapsulating data cleaning procedures, predictive modeling methodologies, model evaluation, and significant insights or trends identified within the dataset, including all visualizations)\n\nEnsure all files are saved in the specified formats with the provided filenames for further evaluation.\"",
+    "dag_nodes": [
+      {
+        "id": "data_ingestion",
+        "name": "Data Ingestion",
+        "description": "Loads train.csv and test.csv into memory as raw dataframes for downstream processing.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "drop_high_missingness_columns",
+        "name": "Drop High Missingness Columns",
+        "description": "Drops columns with extremely high missingness rates (Alley, MiscFeature, PoolQC, Fence, MasVnrType, FireplaceQu) from both train and test dataframes.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "outlier_removal",
+        "name": "Outlier Removal",
+        "description": "Removes extreme outliers from the training set identified via GrLivArea vs SalePrice scatter plot (large area, low price) per Kaggle competition guidance.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "imputation",
+        "name": "Missing Value Imputation",
+        "description": "Imputes remaining missing values using domain-appropriate strategies: neighborhood-grouped median for LotFrontage, overall median for GarageYrBlt, zero for MasVnrArea, mode for low-missingness categoricals, and sentinel 'None' for basement and garage ordinal columns.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "feature_engineering",
+        "name": "Feature Engineering",
+        "description": "Creates derived features TotalSF, HouseAge, RemodAge, and TotalBathrooms to capture strong known predictors of house price.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "ordinal_encoding",
+        "name": "Ordinal Encoding",
+        "description": "Applies manually defined domain-appropriate ordinal encoding to quality and condition features such as ExterQual, BsmtQual, KitchenQual, and others with a natural ordering.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "one_hot_encoding",
+        "name": "One-Hot Encoding",
+        "description": "Applies one-hot encoding to nominal categorical features with no natural ordering, such as Neighborhood, MSZoning, SaleType, and others, aligning columns across train and test sets.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "target_transformation",
+        "name": "Target Variable Transformation",
+        "description": "Applies log1p transformation to the SalePrice target variable in the training set to reduce right skew and improve model fit.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "save_cleaned_data",
+        "name": "Save Cleaned Data",
+        "description": "Persists the fully cleaned and encoded combined dataset to cleaned_data.csv as the required intermediate output.",
+        "processing_time": 8,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "model_training",
+        "name": "Model Training",
+        "description": "Trains a Gradient Boosting Regressor (XGBoost or sklearn GBR) on the transformed training features and log1p-transformed SalePrice target.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "cross_validation",
+        "name": "Cross Validation",
+        "description": "Performs K-fold cross-validation on the training set to compute MAE and RMSE on back-transformed predictions, producing robust performance estimates.",
+        "processing_time": 150,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "prediction",
+        "name": "Prediction",
+        "description": "Generates predictions on the test set using the trained model and back-transforms them with expm1, then saves predicted prices alongside actual training values to predicted_prices.csv.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "save_evaluation_metrics",
+        "name": "Save Evaluation Metrics",
+        "description": "Formats cross-validation MAE and RMSE results into a table and saves them to model_evaluation_metrics.csv.",
+        "processing_time": 8,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "generate_visualizations",
+        "name": "Generate Visualizations",
+        "description": "Creates a compiled PNG featuring a SalePrice histogram, GrLivArea vs SalePrice scatter plot, predicted vs actual scatter plot, and box plots of SalePrice by Neighborhood and OverallQual.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "generate_report",
+        "name": "Generate PDF Report",
+        "description": "Programmatically assembles a comprehensive PDF report using a PDF library, embedding all visualizations, metric tables, and narrative sections covering data cleaning, modeling, evaluation, and insights.",
+        "processing_time": 8,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      }
+    ],
+    "dag_edges": [
+      {
+        "from": "data_ingestion",
+        "to": "drop_high_missingness_columns",
+        "data": [
+          "raw_train_df",
+          "raw_test_df"
+        ]
+      },
+      {
+        "from": "drop_high_missingness_columns",
+        "to": "outlier_removal",
+        "data": [
+          "train_df_reduced",
+          "test_df_reduced"
+        ]
+      },
+      {
+        "from": "outlier_removal",
+        "to": "imputation",
+        "data": [
+          "train_df_no_outliers",
+          "test_df_reduced"
+        ]
+      },
+      {
+        "from": "imputation",
+        "to": "feature_engineering",
+        "data": [
+          "train_df_imputed",
+          "test_df_imputed"
+        ]
+      },
+      {
+        "from": "feature_engineering",
+        "to": "ordinal_encoding",
+        "data": [
+          "train_df_engineered",
+          "test_df_engineered"
+        ]
+      },
+      {
+        "from": "ordinal_encoding",
+        "to": "one_hot_encoding",
+        "data": [
+          "train_df_ordinal",
+          "test_df_ordinal"
+        ]
+      },
+      {
+        "from": "one_hot_encoding",
+        "to": "target_transformation",
+        "data": [
+          "train_df_encoded",
+          "test_df_encoded"
+        ]
+      },
+      {
+        "from": "target_transformation",
+        "to": "save_cleaned_data",
+        "data": [
+          "train_df_final",
+          "test_df_final"
+        ]
+      },
+      {
+        "from": "target_transformation",
+        "to": "model_training",
+        "data": [
+          "train_features",
+          "train_target_log"
+        ]
+      },
+      {
+        "from": "one_hot_encoding",
+        "to": "save_cleaned_data",
+        "data": [
+          "test_df_encoded"
+        ]
+      },
+      {
+        "from": "save_cleaned_data",
+        "to": "generate_visualizations",
+        "data": [
+          "cleaned_data.csv"
+        ]
+      },
+      {
+        "from": "model_training",
+        "to": "cross_validation",
+        "data": [
+          "trained_model",
+          "train_features",
+          "train_target_log"
+        ]
+      },
+      {
+        "from": "model_training",
+        "to": "prediction",
+        "data": [
+          "trained_model"
+        ]
+      },
+      {
+        "from": "one_hot_encoding",
+        "to": "prediction",
+        "data": [
+          "test_df_encoded"
+        ]
+      },
+      {
+        "from": "target_transformation",
+        "to": "prediction",
+        "data": [
+          "train_target_log",
+          "train_features"
+        ]
+      },
+      {
+        "from": "cross_validation",
+        "to": "save_evaluation_metrics",
+        "data": [
+          "cv_mae",
+          "cv_rmse"
+        ]
+      },
+      {
+        "from": "prediction",
+        "to": "generate_visualizations",
+        "data": [
+          "predicted_prices.csv"
+        ]
+      },
+      {
+        "from": "prediction",
+        "to": "generate_report",
+        "data": [
+          "predicted_prices.csv"
+        ]
+      },
+      {
+        "from": "save_evaluation_metrics",
+        "to": "generate_report",
+        "data": [
+          "model_evaluation_metrics.csv"
+        ]
+      },
+      {
+        "from": "generate_visualizations",
+        "to": "generate_report",
+        "data": [
+          "visualizations.png"
+        ]
+      }
+    ],
+    "workers": [
+      "laptop",
+      "workstation",
+      "cloud_cpu",
+      "cloud_gpu_1",
+      "cloud_gpu_2"
+    ]
+  },
+  {
+    "task_id": "dac_data-sa-006",
+    "task_description": "In this task, you will use the Quantitative Risk Management dataset to calculate and save covariance matrices for three distinct time periods: \"before,\" \"during,\" and \"after.\" Based on the `epochs_description.txt` file, perform the calculations and ensure that the results are saved according to the format in `template.csv`. Each file should be named `{epoch}_covariance.csv` to match the corresponding time period. Confirm that the matrices are calculated accurately and saved in the correct format.",
+    "dag_nodes": [
+      {
+        "id": "load_inputs",
+        "name": "Load Inputs",
+        "description": "Reads the quantitative risk management CSV, epochs_description.txt, and template.csv into memory as raw data structures.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "parse_epochs",
+        "name": "Parse Epochs",
+        "description": "Parses epochs_description.txt to extract the named time period labels ('before', 'during', 'after') and their corresponding start and end date boundaries.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "parse_dates",
+        "name": "Parse Dates",
+        "description": "Converts the Date column in the main dataset from string to datetime to enable range-based filtering against epoch boundaries.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "inspect_template",
+        "name": "Inspect Template",
+        "description": "Reads template.csv to determine the expected row/column labeling conventions and output structure for the covariance matrix files.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "filter_before",
+        "name": "Filter Before Epoch",
+        "description": "Filters the date-parsed dataset to retain only rows falling within the 'before' epoch date range.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "filter_during",
+        "name": "Filter During Epoch",
+        "description": "Filters the date-parsed dataset to retain only rows falling within the 'during' epoch date range.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "filter_after",
+        "name": "Filter After Epoch",
+        "description": "Filters the date-parsed dataset to retain only rows falling within the 'after' epoch date range.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "compute_cov_before",
+        "name": "Compute Before Covariance",
+        "description": "Computes the pairwise sample covariance matrix using DataFrame.cov() on the four financial return columns for the 'before' epoch subset.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "compute_cov_during",
+        "name": "Compute During Covariance",
+        "description": "Computes the pairwise sample covariance matrix using DataFrame.cov() on the four financial return columns for the 'during' epoch subset.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "compute_cov_after",
+        "name": "Compute After Covariance",
+        "description": "Computes the pairwise sample covariance matrix using DataFrame.cov() on the four financial return columns for the 'after' epoch subset.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "save_before",
+        "name": "Save Before Covariance",
+        "description": "Formats the 'before' covariance matrix to match the template structure and saves it as before_covariance.csv.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "save_during",
+        "name": "Save During Covariance",
+        "description": "Formats the 'during' covariance matrix to match the template structure and saves it as during_covariance.csv.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "save_after",
+        "name": "Save After Covariance",
+        "description": "Formats the 'after' covariance matrix to match the template structure and saves it as after_covariance.csv.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      }
+    ],
+    "dag_edges": [
+      {
+        "from": "load_inputs",
+        "to": "parse_epochs",
+        "data": [
+          "raw_epochs_text"
+        ]
+      },
+      {
+        "from": "load_inputs",
+        "to": "parse_dates",
+        "data": [
+          "raw_returns_dataframe"
+        ]
+      },
+      {
+        "from": "load_inputs",
+        "to": "inspect_template",
+        "data": [
+          "raw_template"
+        ]
+      },
+      {
+        "from": "parse_epochs",
+        "to": "filter_before",
+        "data": [
+          "epoch_boundaries"
+        ]
+      },
+      {
+        "from": "parse_epochs",
+        "to": "filter_during",
+        "data": [
+          "epoch_boundaries"
+        ]
+      },
+      {
+        "from": "parse_epochs",
+        "to": "filter_after",
+        "data": [
+          "epoch_boundaries"
+        ]
+      },
+      {
+        "from": "parse_dates",
+        "to": "filter_before",
+        "data": [
+          "datetime_indexed_dataframe"
+        ]
+      },
+      {
+        "from": "parse_dates",
+        "to": "filter_during",
+        "data": [
+          "datetime_indexed_dataframe"
+        ]
+      },
+      {
+        "from": "parse_dates",
+        "to": "filter_after",
+        "data": [
+          "datetime_indexed_dataframe"
+        ]
+      },
+      {
+        "from": "filter_before",
+        "to": "compute_cov_before",
+        "data": [
+          "before_subset"
+        ]
+      },
+      {
+        "from": "filter_during",
+        "to": "compute_cov_during",
+        "data": [
+          "during_subset"
+        ]
+      },
+      {
+        "from": "filter_after",
+        "to": "compute_cov_after",
+        "data": [
+          "after_subset"
+        ]
+      },
+      {
+        "from": "inspect_template",
+        "to": "save_before",
+        "data": [
+          "template_format_spec"
+        ]
+      },
+      {
+        "from": "inspect_template",
+        "to": "save_during",
+        "data": [
+          "template_format_spec"
+        ]
+      },
+      {
+        "from": "inspect_template",
+        "to": "save_after",
+        "data": [
+          "template_format_spec"
+        ]
+      },
+      {
+        "from": "compute_cov_before",
+        "to": "save_before",
+        "data": [
+          "before_covariance_matrix"
+        ]
+      },
+      {
+        "from": "compute_cov_during",
+        "to": "save_during",
+        "data": [
+          "during_covariance_matrix"
+        ]
+      },
+      {
+        "from": "compute_cov_after",
+        "to": "save_after",
+        "data": [
+          "after_covariance_matrix"
+        ]
+      }
+    ],
+    "workers": [
+      "laptop",
+      "workstation",
+      "cloud_cpu",
+      "cloud_gpu_1",
+      "cloud_gpu_2"
+    ]
+  },
+  {
+    "task_id": "dsb_hu_132",
+    "task_description": "\"You are tasked with an in-depth analysis of the \"\"Mall Customers\"\" dataset from Kaggle (input filename: \"\"data.csv\"\") to segment customers and identify their spending behaviors. 1. Develop a predictive model aimed at segmenting customers using the K-means clustering algorithm based on their annual income and spending score.\n- **Output filename:** \"\"customer_segments.csv\"\"\n\n2. Determine the optimal number of clusters using the Elbow method, and justify your choice based on the method's output.\n- **Output filename:** \"\"elbow_method.png\"\"\n\n3. Conclude your analysis by delving into the customer segments revealed by the clustering. Characterize each segment by describing their distinct attributes, such as average age, income range, and spending score. Discuss any notable patterns or insights that emerge from the clustering results, and consider the implications of these segments for marketing strategies and customer engagement.\n- **Output filename:** \"\"customer_segmentation_analysis.pdf\"\"\"",
+    "dag_nodes": [
+      {
+        "id": "load_data",
+        "name": "Load Raw Data",
+        "description": "Reads data.csv into a dataframe, validating the schema and confirming no missing values across all columns.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_features",
+        "name": "Extract Clustering Features",
+        "description": "Selects Annual Income (k$) and Spending Score (1-100) as the two features to be used for K-means clustering.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "scale_features",
+        "name": "Scale Features",
+        "description": "Applies standard scaling to the two selected features so that differing value ranges contribute equally to the clustering algorithm.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "elbow_method",
+        "name": "Compute Elbow Curve",
+        "description": "Runs K-means for k=1 through k=10 on the scaled features, recording inertia at each k to identify the optimal number of clusters.",
+        "processing_time": 45,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "plot_elbow",
+        "name": "Plot and Save Elbow Chart",
+        "description": "Renders the inertia-vs-k curve as a clearly labelled line chart and saves it to elbow_method.png.",
+        "processing_time": 45,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "fit_kmeans",
+        "name": "Fit K-Means Model",
+        "description": "Fits the final K-means model on the scaled features using the optimal k identified from the elbow curve.",
+        "processing_time": 120,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "assign_segments",
+        "name": "Assign Cluster Labels",
+        "description": "Appends the cluster label for every customer back to the original dataframe and saves the result to customer_segments.csv.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "compute_segment_stats",
+        "name": "Compute Segment Statistics",
+        "description": "Calculates per-segment descriptive statistics including mean and range of Age, Annual Income, Spending Score, and Gender distribution.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "build_cluster_scatter",
+        "name": "Build Cluster Scatter Plot",
+        "description": "Creates a 2D scatter plot of Annual Income vs. Spending Score with points colour-coded by cluster and centroids marked.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "generate_report",
+        "name": "Generate PDF Analysis Report",
+        "description": "Combines the cluster scatter plot, descriptive statistics tables, and written narrative (insights and marketing implications per segment) into customer_segmentation_analysis.pdf.",
+        "processing_time": 8,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      }
+    ],
+    "dag_edges": [
+      {
+        "from": "load_data",
+        "to": "extract_features",
+        "data": [
+          "raw_dataframe"
+        ]
+      },
+      {
+        "from": "load_data",
+        "to": "assign_segments",
+        "data": [
+          "raw_dataframe"
+        ]
+      },
+      {
+        "from": "load_data",
+        "to": "compute_segment_stats",
+        "data": [
+          "raw_dataframe"
+        ]
+      },
+      {
+        "from": "extract_features",
+        "to": "scale_features",
+        "data": [
+          "feature_matrix"
+        ]
+      },
+      {
+        "from": "scale_features",
+        "to": "elbow_method",
+        "data": [
+          "scaled_feature_matrix"
+        ]
+      },
+      {
+        "from": "scale_features",
+        "to": "fit_kmeans",
+        "data": [
+          "scaled_feature_matrix"
+        ]
+      },
+      {
+        "from": "elbow_method",
+        "to": "plot_elbow",
+        "data": [
+          "inertia_values",
+          "k_range"
+        ]
+      },
+      {
+        "from": "elbow_method",
+        "to": "fit_kmeans",
+        "data": [
+          "optimal_k"
+        ]
+      },
+      {
+        "from": "fit_kmeans",
+        "to": "assign_segments",
+        "data": [
+          "cluster_labels",
+          "cluster_centroids"
+        ]
+      },
+      {
+        "from": "fit_kmeans",
+        "to": "build_cluster_scatter",
+        "data": [
+          "cluster_labels",
+          "cluster_centroids"
+        ]
+      },
+      {
+        "from": "assign_segments",
+        "to": "compute_segment_stats",
+        "data": [
+          "segmented_dataframe"
+        ]
+      },
+      {
+        "from": "extract_features",
+        "to": "build_cluster_scatter",
+        "data": [
+          "feature_matrix"
+        ]
+      },
+      {
+        "from": "compute_segment_stats",
+        "to": "generate_report",
+        "data": [
+          "segment_statistics"
+        ]
+      },
+      {
+        "from": "build_cluster_scatter",
+        "to": "generate_report",
+        "data": [
+          "cluster_scatter_figure"
+        ]
+      }
+    ],
+    "workers": [
+      "laptop",
+      "workstation",
+      "cloud_cpu",
+      "cloud_gpu_1",
+      "cloud_gpu_2"
+    ]
+  },
+  {
+    "task_id": "dac_ml-binary-009",
+    "task_description": "Predict passenger satisfaction in test.csv using the  dataset. Save the prediction results into result.csv with the column name 'satisfaction'.",
+    "dag_nodes": [
+      {
+        "id": "load_train_data",
+        "name": "Load Training Data",
+        "description": "Loads the training CSV file into a dataframe for downstream processing.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "load_test_data",
+        "name": "Load Test Data",
+        "description": "Loads the test CSV file into a dataframe for downstream processing.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "drop_identifier_columns_train",
+        "name": "Drop Identifier Columns Train",
+        "description": "Drops 'Unnamed: 0' and 'id' columns from the training dataframe as they carry no predictive value.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "drop_identifier_columns_test",
+        "name": "Drop Identifier Columns Test",
+        "description": "Drops 'Unnamed: 0' and 'id' columns from the test dataframe as they carry no predictive value.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "impute_missing_train",
+        "name": "Impute Missing Values Train",
+        "description": "Applies median imputation to 'Arrival Delay in Minutes' in the training dataframe to handle any missing values.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "impute_missing_test",
+        "name": "Impute Missing Values Test",
+        "description": "Applies the training-derived median to 'Arrival Delay in Minutes' in the test dataframe to handle any missing values consistently.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "encode_categoricals_train",
+        "name": "Encode Categorical Features Train",
+        "description": "Label-encodes categorical string columns (Gender, Customer Type, Type of Travel, Class) in the training dataframe, fitting the encoders on training data.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "encode_categoricals_test",
+        "name": "Encode Categorical Features Test",
+        "description": "Applies the fitted label encoders to the same categorical columns in the test dataframe for consistent encoding.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "encode_target",
+        "name": "Encode Target Variable",
+        "description": "Label-encodes the 'satisfaction' target column in the training dataframe and retains the encoder for inverse transformation of predictions.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_random_forest",
+        "name": "Train Random Forest Classifier",
+        "description": "Trains a Random Forest classifier on the encoded training features and encoded target labels.",
+        "processing_time": 200,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "predict_satisfaction",
+        "name": "Predict Satisfaction",
+        "description": "Uses the trained Random Forest model to generate encoded satisfaction predictions on the test features.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "inverse_transform_predictions",
+        "name": "Inverse Transform Predictions",
+        "description": "Converts numeric encoded predictions back to original string satisfaction labels using the fitted target label encoder.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "save_predictions",
+        "name": "Save Prediction Results",
+        "description": "Writes the final satisfaction predictions to result.csv with the column name 'satisfaction'.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      }
+    ],
+    "dag_edges": [
+      {
+        "from": "load_train_data",
+        "to": "drop_identifier_columns_train",
+        "data": [
+          "raw_train_df"
+        ]
+      },
+      {
+        "from": "load_test_data",
+        "to": "drop_identifier_columns_test",
+        "data": [
+          "raw_test_df"
+        ]
+      },
+      {
+        "from": "drop_identifier_columns_train",
+        "to": "impute_missing_train",
+        "data": [
+          "train_df_no_ids"
+        ]
+      },
+      {
+        "from": "drop_identifier_columns_test",
+        "to": "impute_missing_test",
+        "data": [
+          "test_df_no_ids"
+        ]
+      },
+      {
+        "from": "impute_missing_train",
+        "to": "encode_categoricals_train",
+        "data": [
+          "train_df_imputed",
+          "arrival_delay_median"
+        ]
+      },
+      {
+        "from": "impute_missing_train",
+        "to": "impute_missing_test",
+        "data": [
+          "arrival_delay_median"
+        ]
+      },
+      {
+        "from": "impute_missing_test",
+        "to": "encode_categoricals_test",
+        "data": [
+          "test_df_imputed"
+        ]
+      },
+      {
+        "from": "encode_categoricals_train",
+        "to": "encode_categoricals_test",
+        "data": [
+          "categorical_encoders"
+        ]
+      },
+      {
+        "from": "encode_categoricals_train",
+        "to": "encode_target",
+        "data": [
+          "train_df_encoded"
+        ]
+      },
+      {
+        "from": "encode_categoricals_test",
+        "to": "predict_satisfaction",
+        "data": [
+          "test_features_encoded"
+        ]
+      },
+      {
+        "from": "encode_target",
+        "to": "train_random_forest",
+        "data": [
+          "train_features",
+          "train_labels_encoded"
+        ]
+      },
+      {
+        "from": "encode_target",
+        "to": "inverse_transform_predictions",
+        "data": [
+          "target_label_encoder"
+        ]
+      },
+      {
+        "from": "train_random_forest",
+        "to": "predict_satisfaction",
+        "data": [
+          "trained_rf_model"
+        ]
+      },
+      {
+        "from": "predict_satisfaction",
+        "to": "inverse_transform_predictions",
+        "data": [
+          "encoded_predictions"
+        ]
+      },
+      {
+        "from": "inverse_transform_predictions",
+        "to": "save_predictions",
+        "data": [
+          "satisfaction_labels"
+        ]
+      }
+    ],
+    "workers": [
+      "laptop",
+      "workstation",
+      "cloud_cpu",
+      "cloud_gpu_1",
+      "cloud_gpu_2"
+    ]
+  },
+  {
+    "task_id": "dsb_ce_011",
+    "task_description": "Write a piece of SVR prediction code: to build a relationship between input and output, and save this mapping relationship to \"model.pkl\" file. The known input dataset is 500 rows by 12 columns, named: 12_Input.csv, where each row represents a set of inputs, a total of five hundred input sets. The known output is 500 rows by 500 columns, named: a_full.csv, which is a 500*500 matrix, where the first row of the input corresponds to the first column of the output, and so on. Preferably, use any row of the input as the input to predict a column of values (500*1) in the output, print it, and visualize the prediction accuracy in \"prediction_accuracy.png\".",
+    "dag_nodes": [
+      {
+        "id": "load_data",
+        "name": "Load Data",
+        "description": "Reads 12_Input.csv into a 500\u00d712 feature matrix and a_full.csv into a 500\u00d7500 output matrix, assigning column names as needed.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_test_split",
+        "name": "Train Test Split",
+        "description": "Splits the 500 input rows and corresponding 500\u00d7500 output matrix into training and held-out test sets for later validation.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "fit_scaler",
+        "name": "Fit Scaler",
+        "description": "Fits a StandardScaler on the training input features to normalize feature magnitudes before SVR training.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "scale_features",
+        "name": "Scale Features",
+        "description": "Applies the fitted StandardScaler to transform both training and test input features into standardized form.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_svr_models",
+        "name": "Train SVR Models",
+        "description": "Trains one RBF-kernel SVR model per output column (500 models total), each mapping 12 scaled input features to one scalar target value.",
+        "processing_time": 120,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "save_model",
+        "name": "Save Model",
+        "description": "Bundles all 500 trained SVR models together with the fitted StandardScaler and serializes the bundle to model.pkl.",
+        "processing_time": 8,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_models",
+        "name": "Evaluate Models",
+        "description": "Generates held-out predictions on the scaled test set using all 500 SVR models and computes per-column R\u00b2 and RMSE metrics.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "plot_accuracy",
+        "name": "Plot Accuracy",
+        "description": "Visualizes the per-column R\u00b2 and RMSE metrics as line/bar plots and saves the figure to prediction_accuracy.png.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "predict_sample_row",
+        "name": "Predict Sample Row",
+        "description": "Scales the first row (index 0) of the full input dataset, runs it through all 500 SVR models to produce a 500\u00d71 prediction vector, and prints it to the console.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      }
+    ],
+    "dag_edges": [
+      {
+        "from": "load_data",
+        "to": "train_test_split",
+        "data": [
+          "input_feature_matrix",
+          "output_matrix"
+        ]
+      },
+      {
+        "from": "load_data",
+        "to": "predict_sample_row",
+        "data": [
+          "input_feature_matrix"
+        ]
+      },
+      {
+        "from": "train_test_split",
+        "to": "fit_scaler",
+        "data": [
+          "X_train"
+        ]
+      },
+      {
+        "from": "train_test_split",
+        "to": "scale_features",
+        "data": [
+          "X_train",
+          "X_test"
+        ]
+      },
+      {
+        "from": "train_test_split",
+        "to": "train_svr_models",
+        "data": [
+          "y_train"
+        ]
+      },
+      {
+        "from": "train_test_split",
+        "to": "evaluate_models",
+        "data": [
+          "y_test"
+        ]
+      },
+      {
+        "from": "fit_scaler",
+        "to": "scale_features",
+        "data": [
+          "fitted_scaler"
+        ]
+      },
+      {
+        "from": "fit_scaler",
+        "to": "save_model",
+        "data": [
+          "fitted_scaler"
+        ]
+      },
+      {
+        "from": "fit_scaler",
+        "to": "predict_sample_row",
+        "data": [
+          "fitted_scaler"
+        ]
+      },
+      {
+        "from": "scale_features",
+        "to": "train_svr_models",
+        "data": [
+          "X_train_scaled"
+        ]
+      },
+      {
+        "from": "scale_features",
+        "to": "evaluate_models",
+        "data": [
+          "X_test_scaled"
+        ]
+      },
+      {
+        "from": "train_svr_models",
+        "to": "save_model",
+        "data": [
+          "svr_models_list"
+        ]
+      },
+      {
+        "from": "train_svr_models",
+        "to": "evaluate_models",
+        "data": [
+          "svr_models_list"
+        ]
+      },
+      {
+        "from": "train_svr_models",
+        "to": "predict_sample_row",
+        "data": [
+          "svr_models_list"
+        ]
+      },
+      {
+        "from": "save_model",
+        "to": "plot_accuracy",
+        "data": [
+          "trained_svr_model"
+        ]
+      },
+      {
+        "from": "evaluate_models",
+        "to": "plot_accuracy",
+        "data": [
+          "per_column_r2",
+          "per_column_rmse"
+        ]
+      },
+      {
+        "from": "plot_accuracy",
+        "to": "predict_sample_row",
+        "data": [
+          "prediction_accuracy_plot"
+        ]
+      }
+    ],
+    "workers": [
+      "laptop",
+      "workstation",
+      "cloud_cpu",
+      "cloud_gpu_1",
+      "cloud_gpu_2"
+    ]
+  },
+  {
+    "task_id": "dac_ml-multi-006",
+    "task_description": "Classify credit scores based on the provided dataset. Predict the credit scores for data in test.csv. Write your predictions inscore.csv with the column name \"Credit_Score\".",
+    "dag_nodes": [
+      {
+        "id": "load_train",
+        "name": "Load Train Data",
+        "description": "Reads train.csv into a dataframe as the primary source of labeled training data.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "load_test",
+        "name": "Load Test Data",
+        "description": "Reads test.csv into a dataframe as the source of unlabeled data requiring predictions.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "drop_identifiers_train",
+        "name": "Drop Identifier Columns Train",
+        "description": "Drops non-predictive identifier columns (ID, Customer_ID, SSN, Name, Month) from the training dataframe.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "drop_identifiers_test",
+        "name": "Drop Identifier Columns Test",
+        "description": "Drops non-predictive identifier columns (ID, Customer_ID, SSN, Name, Month) from the test dataframe.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "parse_numeric_train",
+        "name": "Parse Numeric String Columns Train",
+        "description": "Strips non-numeric characters from string-typed numeric columns (Age, Annual_Income, Num_of_Loan, Num_of_Delayed_Payment, Changed_Credit_Limit, Outstanding_Debt, Amount_invested_monthly, Credit_History_Age) and converts them to numeric types in the training set.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "parse_numeric_test",
+        "name": "Parse Numeric String Columns Test",
+        "description": "Strips non-numeric characters from string-typed numeric columns and converts them to numeric types in the test set, mirroring the training transformation.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "outlier_capping_train",
+        "name": "Outlier Capping Train",
+        "description": "Caps highly skewed financial numeric features at configurable percentile bounds in the training set to reduce noise, fitting the bounds on training data.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "outlier_capping_test",
+        "name": "Outlier Capping Test",
+        "description": "Applies the percentile cap bounds fitted on training data to the test set numeric features.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "impute_train",
+        "name": "Impute Missing Values Train",
+        "description": "Applies median imputation to numeric columns with missing values and mode or 'Unknown' imputation to categorical columns (Type_of_Loan gets 'Unknown'), fitting imputation statistics on training data.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "impute_test",
+        "name": "Impute Missing Values Test",
+        "description": "Applies the imputation statistics fitted on training data to fill missing values in the test set.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "encode_categoricals_train",
+        "name": "Encode Categorical Features Train",
+        "description": "Applies ordinal encoding to Credit_Mix and Payment_of_Min_Amount, one-hot encoding to Occupation and Payment_Behaviour, and multi-label binarization to Type_of_Loan on the training set, fitting all encoders on training data.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "encode_categoricals_test",
+        "name": "Encode Categorical Features Test",
+        "description": "Applies the fitted encoders from training to transform categorical features in the test set, ensuring consistent column alignment.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "encode_target",
+        "name": "Encode Target Label",
+        "description": "Applies label encoding to the Credit_Score target column in the training set to convert categorical labels to numeric values required by the classifier.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "cross_validate",
+        "name": "Stratified K-Fold Cross Validation",
+        "description": "Evaluates the Random Forest classifier using stratified k-fold cross-validation on the training set to account for class imbalance and report validation performance.",
+        "processing_time": 150,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model",
+        "name": "Train Random Forest Classifier",
+        "description": "Fits a Random Forest classifier on the full encoded and imputed training dataset using the label-encoded target.",
+        "processing_time": 200,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "predict",
+        "name": "Generate Predictions",
+        "description": "Uses the trained Random Forest classifier to predict credit score labels for the test set, then inverse-transforms the label encoding and writes the Credit_Score column to score.csv.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      }
+    ],
+    "dag_edges": [
+      {
+        "from": "load_train",
+        "to": "drop_identifiers_train",
+        "data": [
+          "train_df"
+        ]
+      },
+      {
+        "from": "load_test",
+        "to": "drop_identifiers_test",
+        "data": [
+          "test_df"
+        ]
+      },
+      {
+        "from": "drop_identifiers_train",
+        "to": "parse_numeric_train",
+        "data": [
+          "train_df_no_ids"
+        ]
+      },
+      {
+        "from": "drop_identifiers_test",
+        "to": "parse_numeric_test",
+        "data": [
+          "test_df_no_ids"
+        ]
+      },
+      {
+        "from": "parse_numeric_train",
+        "to": "outlier_capping_train",
+        "data": [
+          "train_df_parsed"
+        ]
+      },
+      {
+        "from": "parse_numeric_test",
+        "to": "outlier_capping_test",
+        "data": [
+          "test_df_parsed"
+        ]
+      },
+      {
+        "from": "outlier_capping_train",
+        "to": "impute_train",
+        "data": [
+          "train_df_capped",
+          "cap_bounds"
+        ]
+      },
+      {
+        "from": "outlier_capping_train",
+        "to": "outlier_capping_test",
+        "data": [
+          "cap_bounds"
+        ]
+      },
+      {
+        "from": "outlier_capping_test",
+        "to": "impute_test",
+        "data": [
+          "test_df_capped"
+        ]
+      },
+      {
+        "from": "impute_train",
+        "to": "encode_categoricals_train",
+        "data": [
+          "train_df_imputed",
+          "imputation_stats"
+        ]
+      },
+      {
+        "from": "impute_train",
+        "to": "impute_test",
+        "data": [
+          "imputation_stats"
+        ]
+      },
+      {
+        "from": "impute_test",
+        "to": "encode_categoricals_test",
+        "data": [
+          "test_df_imputed"
+        ]
+      },
+      {
+        "from": "encode_categoricals_train",
+        "to": "encode_target",
+        "data": [
+          "train_features",
+          "fitted_encoders"
+        ]
+      },
+      {
+        "from": "encode_categoricals_train",
+        "to": "encode_categoricals_test",
+        "data": [
+          "fitted_encoders"
+        ]
+      },
+      {
+        "from": "encode_categoricals_test",
+        "to": "predict",
+        "data": [
+          "test_features"
+        ]
+      },
+      {
+        "from": "encode_target",
+        "to": "cross_validate",
+        "data": [
+          "train_features",
+          "train_labels_encoded",
+          "label_encoder"
+        ]
+      },
+      {
+        "from": "encode_target",
+        "to": "train_model",
+        "data": [
+          "train_features",
+          "train_labels_encoded",
+          "label_encoder"
+        ]
+      },
+      {
+        "from": "cross_validate",
+        "to": "train_model",
+        "data": [
+          "cv_scores"
+        ]
+      },
+      {
+        "from": "train_model",
+        "to": "predict",
+        "data": [
+          "trained_model",
+          "label_encoder"
+        ]
+      },
+      {
+        "from": "predict",
+        "to": null,
+        "data": [
+          "score.csv predictions"
+        ]
+      }
+    ],
+    "workers": [
+      "laptop",
+      "workstation",
+      "cloud_cpu",
+      "cloud_gpu_1",
+      "cloud_gpu_2"
+    ]
+  },
+  {
+    "task_id": "dac_ml-binary-017",
+    "task_description": "Predict whether it will rain the next day for each row in test.csv using the Rain in Australia dataset. Save your predictions in tomorrow.csv with the column name \"RainTomorrow\".",
+    "dag_nodes": [
+      {
+        "id": "load_train",
+        "name": "Load Train Data",
+        "description": "Read train.csv into a dataframe, establishing the labeled dataset for model development.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "load_test",
+        "name": "Load Test Data",
+        "description": "Read test.csv into a dataframe, establishing the unlabeled dataset requiring predictions.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "date_feature_extraction_train",
+        "name": "Date Feature Extraction Train",
+        "description": "Parse the Date column in training data to extract cyclic month and day-of-year features, then drop the raw date string.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "date_feature_extraction_test",
+        "name": "Date Feature Extraction Test",
+        "description": "Parse the Date column in test data to extract cyclic month and day-of-year features, then drop the raw date string.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "fit_categorical_encoder",
+        "name": "Fit Categorical Encoder",
+        "description": "Fit label encoders on the training data for high-cardinality categorical columns (Location, WindGustDir, WindDir9am, WindDir3pm, RainToday).",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "encode_train_categoricals",
+        "name": "Encode Train Categoricals",
+        "description": "Apply the fitted label encoders to transform categorical features in the training set into ordinal integers.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "encode_test_categoricals",
+        "name": "Encode Test Categoricals",
+        "description": "Apply the fitted label encoders to transform categorical features in the test set into ordinal integers.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "fit_numerical_imputer",
+        "name": "Fit Numerical Imputer",
+        "description": "Compute per-feature medians from the training data for all numerical columns to be used for missing value imputation.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "fit_categorical_imputer",
+        "name": "Fit Categorical Imputer",
+        "description": "Compute per-feature modes from the training data for all categorical columns to be used for missing value imputation.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "impute_train",
+        "name": "Impute Train Data",
+        "description": "Apply median imputation to numerical columns and mode imputation to categorical columns in the training set using the fitted imputers.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "impute_test",
+        "name": "Impute Test Data",
+        "description": "Apply median imputation to numerical columns and mode imputation to categorical columns in the test set using the fitted imputers.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model",
+        "name": "Train Gradient Boosting Classifier",
+        "description": "Train a gradient boosting classifier (LightGBM/XGBoost) with class-weight balancing and evaluate using stratified k-fold cross-validation on the training set.",
+        "processing_time": 200,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "generate_predictions",
+        "name": "Generate Predictions",
+        "description": "Apply the trained classifier to the prepared test features to produce binary RainTomorrow predictions, and save them to tomorrow.csv.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      }
+    ],
+    "dag_edges": [
+      {
+        "from": "load_train",
+        "to": "date_feature_extraction_train",
+        "data": [
+          "train_raw_df"
+        ]
+      },
+      {
+        "from": "load_test",
+        "to": "date_feature_extraction_test",
+        "data": [
+          "test_raw_df"
+        ]
+      },
+      {
+        "from": "date_feature_extraction_train",
+        "to": "fit_categorical_encoder",
+        "data": [
+          "train_date_featured_df"
+        ]
+      },
+      {
+        "from": "date_feature_extraction_train",
+        "to": "fit_categorical_imputer",
+        "data": [
+          "train_date_featured_df"
+        ]
+      },
+      {
+        "from": "date_feature_extraction_train",
+        "to": "fit_numerical_imputer",
+        "data": [
+          "train_date_featured_df"
+        ]
+      },
+      {
+        "from": "date_feature_extraction_train",
+        "to": "encode_train_categoricals",
+        "data": [
+          "train_date_featured_df"
+        ]
+      },
+      {
+        "from": "date_feature_extraction_test",
+        "to": "encode_test_categoricals",
+        "data": [
+          "test_date_featured_df"
+        ]
+      },
+      {
+        "from": "fit_categorical_encoder",
+        "to": "encode_train_categoricals",
+        "data": [
+          "fitted_label_encoders"
+        ]
+      },
+      {
+        "from": "fit_categorical_encoder",
+        "to": "encode_test_categoricals",
+        "data": [
+          "fitted_label_encoders"
+        ]
+      },
+      {
+        "from": "encode_train_categoricals",
+        "to": "impute_train",
+        "data": [
+          "train_encoded_df"
+        ]
+      },
+      {
+        "from": "encode_test_categoricals",
+        "to": "impute_test",
+        "data": [
+          "test_encoded_df"
+        ]
+      },
+      {
+        "from": "fit_numerical_imputer",
+        "to": "impute_train",
+        "data": [
+          "numerical_medians"
+        ]
+      },
+      {
+        "from": "fit_numerical_imputer",
+        "to": "impute_test",
+        "data": [
+          "numerical_medians"
+        ]
+      },
+      {
+        "from": "fit_categorical_imputer",
+        "to": "impute_train",
+        "data": [
+          "categorical_modes"
+        ]
+      },
+      {
+        "from": "fit_categorical_imputer",
+        "to": "impute_test",
+        "data": [
+          "categorical_modes"
+        ]
+      },
+      {
+        "from": "impute_train",
+        "to": "train_model",
+        "data": [
+          "train_features",
+          "train_labels"
+        ]
+      },
+      {
+        "from": "impute_test",
+        "to": "generate_predictions",
+        "data": [
+          "test_features"
+        ]
+      },
+      {
+        "from": "train_model",
+        "to": "generate_predictions",
+        "data": [
+          "trained_classifier"
+        ]
+      }
+    ],
+    "workers": [
+      "laptop",
+      "workstation",
+      "cloud_cpu",
+      "cloud_gpu_1",
+      "cloud_gpu_2"
+    ]
+  },
+  {
+    "task_id": "dac_ml-multi-011",
+    "task_description": "Classify the sentiment of tweets based on the provided dataset. Predict the sentiment for text data in Corona_NLP_test.csv. Write your predictions in sentiment.csv with the column name \"Sentiment\".",
+    "dag_nodes": [
+      {
+        "id": "load_train_data",
+        "name": "Load Training Data",
+        "description": "Loads the training CSV file and retains the 'OriginalTweet' and 'Sentiment' columns for downstream processing.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "load_test_data",
+        "name": "Load Test Data",
+        "description": "Loads Corona_NLP_test.csv and retains the 'OriginalTweet' column as the feature for prediction.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "preprocess_train_text",
+        "name": "Preprocess Train Text",
+        "description": "Applies tweet-specific cleaning (lowercasing, removing URLs, mentions, hashtags, punctuation, and stopwords) to the training tweet text.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "preprocess_test_text",
+        "name": "Preprocess Test Text",
+        "description": "Applies the same tweet-specific cleaning pipeline to the test tweet text to ensure consistency with training preprocessing.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_val_split",
+        "name": "Train Validation Split",
+        "description": "Splits the cleaned training data into a train subset and a validation subset to enable model performance evaluation before test prediction.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "fit_tfidf_vectorizer",
+        "name": "Fit TF-IDF Vectorizer",
+        "description": "Fits a TF-IDF vectorizer on the training split text to learn vocabulary and IDF weights.",
+        "processing_time": 60,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "transform_train_features",
+        "name": "Transform Train Features",
+        "description": "Transforms the training split cleaned text into TF-IDF numerical feature matrices using the fitted vectorizer.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "transform_val_features",
+        "name": "Transform Validation Features",
+        "description": "Transforms the validation split cleaned text into TF-IDF numerical features using the fitted vectorizer.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "transform_test_features",
+        "name": "Transform Test Features",
+        "description": "Transforms the test set cleaned text into TF-IDF numerical features using the fitted vectorizer.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_logistic_regression",
+        "name": "Train Logistic Regression",
+        "description": "Trains a multi-class Logistic Regression classifier on the TF-IDF training features and corresponding sentiment labels.",
+        "processing_time": 120,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model",
+        "name": "Evaluate Model",
+        "description": "Generates predictions on the validation set and computes performance metrics to assess model quality before final prediction.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "predict_test_sentiment",
+        "name": "Predict Test Sentiment",
+        "description": "Applies the trained Logistic Regression model to the test TF-IDF features and writes the predicted sentiments to sentiment.csv with the column name 'Sentiment'.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      }
+    ],
+    "dag_edges": [
+      {
+        "from": "load_train_data",
+        "to": "preprocess_train_text",
+        "data": [
+          "train_original_tweets",
+          "train_labels"
+        ]
+      },
+      {
+        "from": "load_test_data",
+        "to": "preprocess_test_text",
+        "data": [
+          "test_original_tweets"
+        ]
+      },
+      {
+        "from": "preprocess_train_text",
+        "to": "train_val_split",
+        "data": [
+          "cleaned_train_tweets",
+          "train_labels"
+        ]
+      },
+      {
+        "from": "train_val_split",
+        "to": "fit_tfidf_vectorizer",
+        "data": [
+          "train_split_tweets"
+        ]
+      },
+      {
+        "from": "train_val_split",
+        "to": "transform_train_features",
+        "data": [
+          "train_split_tweets",
+          "train_split_labels"
+        ]
+      },
+      {
+        "from": "train_val_split",
+        "to": "transform_val_features",
+        "data": [
+          "val_split_tweets",
+          "val_split_labels"
+        ]
+      },
+      {
+        "from": "fit_tfidf_vectorizer",
+        "to": "transform_train_features",
+        "data": [
+          "fitted_tfidf_vectorizer"
+        ]
+      },
+      {
+        "from": "fit_tfidf_vectorizer",
+        "to": "transform_val_features",
+        "data": [
+          "fitted_tfidf_vectorizer"
+        ]
+      },
+      {
+        "from": "fit_tfidf_vectorizer",
+        "to": "transform_test_features",
+        "data": [
+          "fitted_tfidf_vectorizer"
+        ]
+      },
+      {
+        "from": "preprocess_test_text",
+        "to": "transform_test_features",
+        "data": [
+          "cleaned_test_tweets"
+        ]
+      },
+      {
+        "from": "transform_train_features",
+        "to": "train_logistic_regression",
+        "data": [
+          "train_tfidf_matrix",
+          "train_split_labels"
+        ]
+      },
+      {
+        "from": "transform_val_features",
+        "to": "evaluate_model",
+        "data": [
+          "val_tfidf_matrix",
+          "val_split_labels"
+        ]
+      },
+      {
+        "from": "train_logistic_regression",
+        "to": "evaluate_model",
+        "data": [
+          "trained_classifier"
+        ]
+      },
+      {
+        "from": "train_logistic_regression",
+        "to": "predict_test_sentiment",
+        "data": [
+          "trained_classifier"
+        ]
+      },
+      {
+        "from": "transform_test_features",
+        "to": "predict_test_sentiment",
+        "data": [
+          "test_tfidf_matrix"
+        ]
+      }
+    ],
+    "workers": [
+      "laptop",
+      "workstation",
+      "cloud_cpu",
+      "cloud_gpu_1",
+      "cloud_gpu_2"
+    ]
+  },
+  {
+    "task_id": "dsb_ce_048",
+    "task_description": "Description: It is recommended to use open-source toolkits, such as scikit-learn, which has an implementation of the Naive Bayes function for the Naive Bayes Classifier.\n\nDataset: \n- Input files:  \n  - \"Bayesian_Dataset_train.csv\"  \n  - \"Bayesian_Dataset_test.csv\"\n\nData Description: The column names are \"Age, Occupation, Family Income, Education, Marital Status, Job Type, Family Size, Ethnicity, Gender, Workplace\". The last column is the label, indicating whether the income is greater than 50k (>50K).\n\nTask Description: Use the Na\u00efve Bayesian method to predict whether a person's income is higher than 50K annually.\n\nSubtasks and Requirements:\n\n1. Data Preprocessing  \n   - Input: \"Bayesian_Dataset_train.csv\"  \n   - Output: \"preprocessed_data.csv\" (CSV format)  \n   - Details: Clean and prepare the training dataset for modeling.\n\n2. Model Training  \n   - Input: \"preprocessed_data.csv\"  \n   - Output: \"naive_bayes_model.pkl\" (Pickle format)  \n   - Details: Train the Na\u00efve Bayes Classifier on the training dataset.\n\n3. Model Evaluation  \n   - Input: \"naive_bayes_model.pkl\", \"Bayesian_Dataset_test.csv\"  \n   - Output: \"evaluation_results.csv\" (CSV format)  \n   - Details: Evaluate the model using cross-validation and leave-one-out methods, and compute statistical results, including Accuracy, Precision, Recall, F1 Score, and ROC AUC.",
+    "dag_nodes": [
+      {
+        "id": "load_training_data",
+        "name": "Load Training Data",
+        "description": "Reads the raw training CSV file into a dataframe for downstream preprocessing.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "preprocess_training_data",
+        "name": "Preprocess Training Data",
+        "description": "Applies label encoding to all categorical string columns and outputs the encoded training dataframe along with the fitted encoders for reuse on test data.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "save_preprocessed_data",
+        "name": "Save Preprocessed Data",
+        "description": "Writes the encoded training dataframe to preprocessed_data.csv as the required intermediate output artifact.",
+        "processing_time": 8,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_naive_bayes",
+        "name": "Train Naive Bayes",
+        "description": "Trains a GaussianNB classifier on the preprocessed training features and labels, then serializes the fitted model to naive_bayes_model.pkl.",
+        "processing_time": 120,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "load_test_data",
+        "name": "Load Test Data",
+        "description": "Reads the raw test CSV file into a dataframe for downstream preprocessing.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "preprocess_test_data",
+        "name": "Preprocess Test Data",
+        "description": "Applies the fitted label encoders from training preprocessing to transform categorical columns in the test dataset, ensuring consistent feature representation.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "kfold_cross_validation",
+        "name": "K-Fold Cross Validation",
+        "description": "Performs k-fold cross-validation on the trained GaussianNB model using the preprocessed test data and computes Accuracy, Precision, Recall, F1 Score, and ROC AUC across folds.",
+        "processing_time": 150,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "loocv_evaluation",
+        "name": "Leave-One-Out Cross Validation",
+        "description": "Performs Leave-One-Out cross-validation on the trained GaussianNB model using the preprocessed test data and computes the same set of evaluation metrics.",
+        "processing_time": 150,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "aggregate_evaluation_results",
+        "name": "Aggregate Evaluation Results",
+        "description": "Combines the k-fold and LOOCV metric results into a single structured table and writes it to evaluation_results.csv.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      }
+    ],
+    "dag_edges": [
+      {
+        "from": "load_training_data",
+        "to": "preprocess_training_data",
+        "data": [
+          "raw_training_dataframe"
+        ]
+      },
+      {
+        "from": "preprocess_training_data",
+        "to": "save_preprocessed_data",
+        "data": [
+          "encoded_training_dataframe"
+        ]
+      },
+      {
+        "from": "preprocess_training_data",
+        "to": "train_naive_bayes",
+        "data": [
+          "encoded_training_dataframe"
+        ]
+      },
+      {
+        "from": "preprocess_training_data",
+        "to": "preprocess_test_data",
+        "data": [
+          "fitted_label_encoders"
+        ]
+      },
+      {
+        "from": "load_test_data",
+        "to": "preprocess_test_data",
+        "data": [
+          "raw_test_dataframe"
+        ]
+      },
+      {
+        "from": "train_naive_bayes",
+        "to": "kfold_cross_validation",
+        "data": [
+          "naive_bayes_model"
+        ]
+      },
+      {
+        "from": "train_naive_bayes",
+        "to": "loocv_evaluation",
+        "data": [
+          "naive_bayes_model"
+        ]
+      },
+      {
+        "from": "preprocess_test_data",
+        "to": "kfold_cross_validation",
+        "data": [
+          "encoded_test_dataframe"
+        ]
+      },
+      {
+        "from": "preprocess_test_data",
+        "to": "loocv_evaluation",
+        "data": [
+          "encoded_test_dataframe"
+        ]
+      },
+      {
+        "from": "kfold_cross_validation",
+        "to": "aggregate_evaluation_results",
+        "data": [
+          "kfold_metrics"
+        ]
+      },
+      {
+        "from": "loocv_evaluation",
+        "to": "aggregate_evaluation_results",
+        "data": [
+          "loocv_metrics"
+        ]
+      }
+    ],
+    "workers": [
+      "laptop",
+      "workstation",
+      "cloud_cpu",
+      "cloud_gpu_1",
+      "cloud_gpu_2"
+    ]
+  },
+  {
+    "task_id": "dac_ml-binary-021",
+    "task_description": "Predict whether individuals in test.csv have diabetes based on the Diabetes Prediction dataset. Save your predictions in diabetes.csv with the column name \"diabetes\".",
+    "dag_nodes": [
+      {
+        "id": "load_training_data",
+        "name": "Load Training Data",
+        "description": "Reads the training CSV file into a dataframe containing all features and the diabetes target column.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "load_test_data",
+        "name": "Load Test Data",
+        "description": "Reads the test CSV file into a dataframe containing all features without the diabetes target column.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "encode_training_features",
+        "name": "Encode Training Features",
+        "description": "Applies label encoding to 'gender' and 'smoking_history' categorical columns in the training data and fits the encoders.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "encode_test_features",
+        "name": "Encode Test Features",
+        "description": "Applies the fitted label encoders from training to transform 'gender' and 'smoking_history' in the test data.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_val_split",
+        "name": "Train Validation Split",
+        "description": "Splits the encoded training data into a training subset and a validation subset to enable performance evaluation before final prediction.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model",
+        "name": "Train Random Forest Model",
+        "description": "Trains a Random Forest classifier with class_weight='balanced' on the training subset to handle class imbalance.",
+        "processing_time": 200,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "validate_model",
+        "name": "Validate Model",
+        "description": "Evaluates the trained model on the validation subset and reports classification metrics such as accuracy and F1-score.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "predict_test",
+        "name": "Predict Test Labels",
+        "description": "Uses the trained Random Forest model to generate binary diabetes predictions for all rows in the encoded test data and saves them to diabetes.csv.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      }
+    ],
+    "dag_edges": [
+      {
+        "from": "load_training_data",
+        "to": "encode_training_features",
+        "data": [
+          "raw_training_dataframe"
+        ]
+      },
+      {
+        "from": "load_test_data",
+        "to": "encode_test_features",
+        "data": [
+          "raw_test_dataframe"
+        ]
+      },
+      {
+        "from": "encode_training_features",
+        "to": "encode_test_features",
+        "data": [
+          "fitted_label_encoders"
+        ]
+      },
+      {
+        "from": "encode_training_features",
+        "to": "train_val_split",
+        "data": [
+          "encoded_training_dataframe"
+        ]
+      },
+      {
+        "from": "train_val_split",
+        "to": "train_model",
+        "data": [
+          "train_features",
+          "train_labels"
+        ]
+      },
+      {
+        "from": "train_val_split",
+        "to": "validate_model",
+        "data": [
+          "val_features",
+          "val_labels"
+        ]
+      },
+      {
+        "from": "train_model",
+        "to": "validate_model",
+        "data": [
+          "trained_model"
+        ]
+      },
+      {
+        "from": "train_model",
+        "to": "predict_test",
+        "data": [
+          "trained_model"
+        ]
+      },
+      {
+        "from": "encode_test_features",
+        "to": "predict_test",
+        "data": [
+          "encoded_test_features"
+        ]
+      }
+    ],
+    "workers": [
+      "laptop",
+      "workstation",
+      "cloud_cpu",
+      "cloud_gpu_1",
+      "cloud_gpu_2"
+    ]
+  },
+  {
+    "task_id": "dac_ml-multi-008",
+    "task_description": "Predict the categories based on the text information in test.csv for the News Aggregator Dataset competition. Save the predicted results into a file named category.csv, with the column name \"CATEGORY\".",
+    "dag_nodes": [
+      {
+        "id": "load_train",
+        "name": "Load Train Data",
+        "description": "Loads the training CSV file into a dataframe for downstream processing.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "load_test",
+        "name": "Load Test Data",
+        "description": "Loads the test CSV file into a dataframe for downstream prediction.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "concatenate_train_fields",
+        "name": "Concatenate Train Text Fields",
+        "description": "Concatenates TITLE, PUBLISHER, and HOSTNAME into a single combined text field for each training sample.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "concatenate_test_fields",
+        "name": "Concatenate Test Text Fields",
+        "description": "Concatenates TITLE, PUBLISHER, and HOSTNAME into a single combined text field for each test sample.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_val_split",
+        "name": "Train Validation Split",
+        "description": "Splits the training data into a train subset and a validation subset to enable model performance evaluation before final prediction.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "fit_tfidf",
+        "name": "Fit TF-IDF Vectorizer",
+        "description": "Fits a TF-IDF vectorizer on the training subset's combined text field and transforms it into a sparse numeric feature matrix.",
+        "processing_time": 60,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "transform_val",
+        "name": "Transform Validation Features",
+        "description": "Applies the fitted TF-IDF vectorizer to the validation subset's combined text field to produce numeric features.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "transform_test",
+        "name": "Transform Test Features",
+        "description": "Applies the fitted TF-IDF vectorizer to the test dataset's combined text field to produce numeric features.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_logistic_regression",
+        "name": "Train Logistic Regression",
+        "description": "Fits a multi-class Logistic Regression classifier on the TF-IDF features and raw string CATEGORY labels from the training subset.",
+        "processing_time": 120,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "validate_model",
+        "name": "Validate Model",
+        "description": "Generates predictions on the validation set and computes classification metrics to assess model performance.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "predict_test",
+        "name": "Predict Test Categories",
+        "description": "Uses the trained Logistic Regression model to predict CATEGORY labels for the test dataset and saves the results to category.csv.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      }
+    ],
+    "dag_edges": [
+      {
+        "from": "load_train",
+        "to": "concatenate_train_fields",
+        "data": [
+          "train_dataframe"
+        ]
+      },
+      {
+        "from": "load_test",
+        "to": "concatenate_test_fields",
+        "data": [
+          "test_dataframe"
+        ]
+      },
+      {
+        "from": "concatenate_train_fields",
+        "to": "train_val_split",
+        "data": [
+          "train_combined_text",
+          "train_labels"
+        ]
+      },
+      {
+        "from": "train_val_split",
+        "to": "fit_tfidf",
+        "data": [
+          "train_subset_text",
+          "train_subset_labels"
+        ]
+      },
+      {
+        "from": "train_val_split",
+        "to": "transform_val",
+        "data": [
+          "val_subset_text",
+          "val_subset_labels"
+        ]
+      },
+      {
+        "from": "fit_tfidf",
+        "to": "transform_val",
+        "data": [
+          "fitted_tfidf_vectorizer",
+          "train_tfidf_features"
+        ]
+      },
+      {
+        "from": "fit_tfidf",
+        "to": "transform_test",
+        "data": [
+          "fitted_tfidf_vectorizer"
+        ]
+      },
+      {
+        "from": "concatenate_test_fields",
+        "to": "transform_test",
+        "data": [
+          "test_combined_text"
+        ]
+      },
+      {
+        "from": "fit_tfidf",
+        "to": "train_logistic_regression",
+        "data": [
+          "train_tfidf_features",
+          "train_subset_labels"
+        ]
+      },
+      {
+        "from": "train_logistic_regression",
+        "to": "validate_model",
+        "data": [
+          "trained_classifier"
+        ]
+      },
+      {
+        "from": "transform_val",
+        "to": "validate_model",
+        "data": [
+          "val_tfidf_features",
+          "val_subset_labels"
+        ]
+      },
+      {
+        "from": "train_logistic_regression",
+        "to": "predict_test",
+        "data": [
+          "trained_classifier"
+        ]
+      },
+      {
+        "from": "transform_test",
+        "to": "predict_test",
+        "data": [
+          "test_tfidf_features"
+        ]
+      },
+      {
+        "from": "load_test",
+        "to": "predict_test",
+        "data": [
+          "test_ids"
+        ]
+      }
+    ],
+    "workers": [
+      "laptop",
+      "workstation",
+      "cloud_cpu",
+      "cloud_gpu_1",
+      "cloud_gpu_2"
+    ]
+  },
+  {
+    "task_id": "dac_ml-regression-008",
+    "task_description": "Predict the product sales based on the shoe product information in the test.csv. Write the prediction results into quantity.csv with the column name \"quantity_sold\" using the data from test.csv.",
+    "dag_nodes": [
+      {
+        "id": "load_train",
+        "name": "Load Train Dataset",
+        "description": "Reads the training CSV file into a structured dataframe for downstream processing.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "load_test",
+        "name": "Load Test Dataset",
+        "description": "Reads the test CSV file into a structured dataframe for downstream prediction.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "date_feature_engineering_train",
+        "name": "Date Feature Engineering Train",
+        "description": "Extracts numeric temporal features such as days since epoch or year/month from the date_created column in the training data.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "date_feature_engineering_test",
+        "name": "Date Feature Engineering Test",
+        "description": "Extracts numeric temporal features such as days since epoch or year/month from the date_created column in the test data.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "price_feature_engineering_train",
+        "name": "Price Feature Engineering Train",
+        "description": "Computes a discount feature (e.g. original_price minus price or ratio) from price-related columns in the training data.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "price_feature_engineering_test",
+        "name": "Price Feature Engineering Test",
+        "description": "Computes a discount feature (e.g. original_price minus price or ratio) from price-related columns in the test data.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "target_transform",
+        "name": "Target Log Transformation",
+        "description": "Applies log transformation to the quantity_sold target variable in the training data to handle right-skewed distribution.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "categorical_encoding_fit",
+        "name": "Categorical Encoding Fit",
+        "description": "Fits target encoders for high-cardinality features (brand, current_seller, category) and a label encoder for low-cardinality features (fulfillment_type) on the training data, and drops free-text fields (name, description).",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "categorical_encoding_transform_train",
+        "name": "Categorical Encoding Transform Train",
+        "description": "Applies the fitted categorical encoders to transform the training data features.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "categorical_encoding_transform_test",
+        "name": "Categorical Encoding Transform Test",
+        "description": "Applies the fitted categorical encoders to transform the test data features.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "model_training",
+        "name": "Gradient Boosting Model Training",
+        "description": "Trains a gradient boosting regressor (XGBoost/LightGBM) on the encoded training features with k-fold cross-validation to estimate generalization performance.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "model_prediction",
+        "name": "Model Prediction",
+        "description": "Generates quantity_sold predictions on the encoded test features using the trained gradient boosting model.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "inverse_target_transform",
+        "name": "Inverse Target Transformation",
+        "description": "Applies inverse log transformation to the raw model predictions to recover quantity_sold in the original scale and writes results to quantity.csv.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      }
+    ],
+    "dag_edges": [
+      {
+        "from": "load_train",
+        "to": "date_feature_engineering_train",
+        "data": [
+          "train_dataframe"
+        ]
+      },
+      {
+        "from": "load_test",
+        "to": "date_feature_engineering_test",
+        "data": [
+          "test_dataframe"
+        ]
+      },
+      {
+        "from": "date_feature_engineering_train",
+        "to": "price_feature_engineering_train",
+        "data": [
+          "train_with_date_features"
+        ]
+      },
+      {
+        "from": "date_feature_engineering_test",
+        "to": "price_feature_engineering_test",
+        "data": [
+          "test_with_date_features"
+        ]
+      },
+      {
+        "from": "price_feature_engineering_train",
+        "to": "target_transform",
+        "data": [
+          "train_with_price_features"
+        ]
+      },
+      {
+        "from": "price_feature_engineering_test",
+        "to": "categorical_encoding_transform_test",
+        "data": [
+          "test_with_price_features"
+        ]
+      },
+      {
+        "from": "target_transform",
+        "to": "categorical_encoding_fit",
+        "data": [
+          "train_with_log_target"
+        ]
+      },
+      {
+        "from": "categorical_encoding_fit",
+        "to": "categorical_encoding_transform_train",
+        "data": [
+          "fitted_encoders",
+          "train_ready_for_encoding"
+        ]
+      },
+      {
+        "from": "categorical_encoding_fit",
+        "to": "categorical_encoding_transform_test",
+        "data": [
+          "fitted_encoders"
+        ]
+      },
+      {
+        "from": "categorical_encoding_transform_train",
+        "to": "model_training",
+        "data": [
+          "encoded_train_features",
+          "log_transformed_target"
+        ]
+      },
+      {
+        "from": "categorical_encoding_transform_test",
+        "to": "model_prediction",
+        "data": [
+          "encoded_test_features"
+        ]
+      },
+      {
+        "from": "model_training",
+        "to": "model_prediction",
+        "data": [
+          "trained_model"
+        ]
+      },
+      {
+        "from": "model_prediction",
+        "to": "inverse_target_transform",
+        "data": [
+          "log_scale_predictions"
+        ]
+      }
+    ],
+    "workers": [
+      "laptop",
+      "workstation",
+      "cloud_cpu",
+      "cloud_gpu_1",
+      "cloud_gpu_2"
+    ]
+  },
+  {
+    "task_id": "dac_ml-competition-014",
+    "task_description": "Join the competition focusing on U.S. county-level monthly microbusiness data. Your task as a participant is to create a predictive model for the data in test.csv. Optimize your approach to achieve accurate predictions and format the results into submission.csv following the structure outlined in sample_submission.csv.",
+    "dag_nodes": [
+      {
+        "id": "load_data",
+        "name": "Load Raw Data",
+        "description": "Loads train, test, census features, and sample submission CSV files into dataframes for downstream processing.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "impute_census",
+        "name": "Impute Census Features",
+        "description": "Fills missing values in the 2020/2021 census feature columns using per-column median imputation to handle the ~0.2% missingness robustly.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "merge_census",
+        "name": "Merge Census Features",
+        "description": "Joins the imputed yearly census features onto train and test records by matching cfips and the calendar year extracted from each record's date field.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_temporal_features",
+        "name": "Extract Temporal Features",
+        "description": "Derives year, month, and a monotonic per-county time index from the date column to capture seasonality and growth trends.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "target_encode_cfips",
+        "name": "Target Encode County ID",
+        "description": "Encodes cfips as the mean microbusiness density per county computed on training data only, then applies the mapping to both train and test sets.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "log_transform_target",
+        "name": "Log Transform Target",
+        "description": "Applies log1p transformation to the microbusiness density target in the training set to stabilize variance and reduce influence of extreme values.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "engineer_lag_rolling",
+        "name": "Engineer Lag and Rolling Features",
+        "description": "Creates per-county lag features (1, 2, 3 months prior) and rolling mean/std features from the log-transformed microbusiness density to capture temporal autocorrelation.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "time_based_split",
+        "name": "Time-Based Train Validation Split",
+        "description": "Splits the training data into a training fold and a held-out validation fold by holding out the most recent months to prevent temporal data leakage.",
+        "processing_time": 10,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_lgbm",
+        "name": "Train LightGBM Model",
+        "description": "Trains a LightGBM gradient boosted regression model on the training fold, using early stopping evaluated on the validation fold.",
+        "processing_time": 200,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "generate_predictions",
+        "name": "Generate Test Predictions",
+        "description": "Applies the trained LightGBM model to the engineered test feature set to produce log-space predictions, then applies expm1 inverse transformation to return predictions to original scale.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "format_submission",
+        "name": "Format Submission",
+        "description": "Aligns predictions to the row IDs defined in sample_submission and writes the final submission.csv file.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      }
+    ],
+    "dag_edges": [
+      {
+        "from": "load_data",
+        "to": "impute_census",
+        "data": [
+          "census_features_df"
+        ]
+      },
+      {
+        "from": "load_data",
+        "to": "merge_census",
+        "data": [
+          "train_df",
+          "test_df"
+        ]
+      },
+      {
+        "from": "load_data",
+        "to": "format_submission",
+        "data": [
+          "sample_submission_df"
+        ]
+      },
+      {
+        "from": "impute_census",
+        "to": "merge_census",
+        "data": [
+          "imputed_census_df"
+        ]
+      },
+      {
+        "from": "merge_census",
+        "to": "extract_temporal_features",
+        "data": [
+          "train_with_census",
+          "test_with_census"
+        ]
+      },
+      {
+        "from": "extract_temporal_features",
+        "to": "target_encode_cfips",
+        "data": [
+          "train_temporal",
+          "test_temporal"
+        ]
+      },
+      {
+        "from": "target_encode_cfips",
+        "to": "log_transform_target",
+        "data": [
+          "train_encoded",
+          "cfips_encoding_map"
+        ]
+      },
+      {
+        "from": "target_encode_cfips",
+        "to": "engineer_lag_rolling",
+        "data": [
+          "test_encoded"
+        ]
+      },
+      {
+        "from": "log_transform_target",
+        "to": "engineer_lag_rolling",
+        "data": [
+          "train_log_target"
+        ]
+      },
+      {
+        "from": "engineer_lag_rolling",
+        "to": "time_based_split",
+        "data": [
+          "train_features"
+        ]
+      },
+      {
+        "from": "engineer_lag_rolling",
+        "to": "generate_predictions",
+        "data": [
+          "test_features"
+        ]
+      },
+      {
+        "from": "time_based_split",
+        "to": "train_lgbm",
+        "data": [
+          "train_fold",
+          "validation_fold"
+        ]
+      },
+      {
+        "from": "train_lgbm",
+        "to": "generate_predictions",
+        "data": [
+          "lgbm_model"
+        ]
+      },
+      {
+        "from": "generate_predictions",
+        "to": "format_submission",
+        "data": [
+          "test_predictions"
+        ]
+      },
+      {
+        "from": "format_submission",
+        "to": null,
+        "data": [
+          "submission.csv"
+        ]
+      }
+    ],
+    "workers": [
+      "laptop",
+      "workstation",
+      "cloud_cpu",
+      "cloud_gpu_1",
+      "cloud_gpu_2"
+    ]
+  },
+  {
+    "task_id": "dac_ml-competition-007",
+    "task_description": "Perform house price predictions and record the results in submission.csv. Follow the format specified in sample_submission.csv.",
+    "dag_nodes": [
+      {
+        "id": "load_data",
+        "name": "Load Data",
+        "description": "Loads the training dataset, test dataset, and sample submission file into memory for downstream processing.",
+        "processing_time": 5,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "feature_engineering",
+        "name": "Feature Engineering",
+        "description": "Derives new features such as TotalSF and HouseAge from existing columns on both train and test sets to improve predictive accuracy.",
+        "processing_time": 30,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "impute_numeric",
+        "name": "Numeric Imputation",
+        "description": "Fills missing values in numeric features using median imputation fitted on training data and applied to both train and test sets.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "impute_categorical",
+        "name": "Categorical Imputation",
+        "description": "Fills missing values in categorical features using most-frequent (mode) imputation fitted on training data and applied to both train and test sets.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "encode_categoricals",
+        "name": "Ordinal Encoding",
+        "description": "Encodes all categorical features with ordinal encoding fitted on training data and applied to both train and test sets for compatibility with gradient boosting.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "log_transform_target",
+        "name": "Log Transform Target",
+        "description": "Applies a log transformation to SalePrice in the training set to reduce right skew and improve model fit.",
+        "processing_time": 15,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "cross_validate",
+        "name": "K-Fold Cross Validation",
+        "description": "Evaluates the Gradient Boosting Regressor via k-fold cross-validation on the training set to estimate generalization performance.",
+        "processing_time": 150,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model",
+        "name": "Train Gradient Boosting Model",
+        "description": "Trains a Gradient Boosting Regressor (XGBoost or LightGBM) on the full preprocessed training set with the log-transformed target.",
+        "processing_time": 200,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "predict_and_export",
+        "name": "Predict and Export Submission",
+        "description": "Generates predictions on the test set, inverse-log-transforms them, aligns results to the sample submission format, and writes submission.csv.",
+        "processing_time": 20,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      }
+    ],
+    "dag_edges": [
+      {
+        "from": "load_data",
+        "to": "feature_engineering",
+        "data": [
+          "raw_train_df",
+          "raw_test_df",
+          "sample_submission_df"
+        ]
+      },
+      {
+        "from": "feature_engineering",
+        "to": "impute_numeric",
+        "data": [
+          "engineered_train_df",
+          "engineered_test_df"
+        ]
+      },
+      {
+        "from": "impute_numeric",
+        "to": "impute_categorical",
+        "data": [
+          "numeric_imputed_train_df",
+          "numeric_imputed_test_df"
+        ]
+      },
+      {
+        "from": "impute_categorical",
+        "to": "encode_categoricals",
+        "data": [
+          "fully_imputed_train_df",
+          "fully_imputed_test_df"
+        ]
+      },
+      {
+        "from": "encode_categoricals",
+        "to": "log_transform_target",
+        "data": [
+          "encoded_train_df",
+          "encoded_test_df"
+        ]
+      },
+      {
+        "from": "log_transform_target",
+        "to": "cross_validate",
+        "data": [
+          "X_train",
+          "y_train_log"
+        ]
+      },
+      {
+        "from": "log_transform_target",
+        "to": "train_model",
+        "data": [
+          "X_train",
+          "y_train_log"
+        ]
+      },
+      {
+        "from": "encode_categoricals",
+        "to": "train_model",
+        "data": [
+          "encoded_test_df"
+        ]
+      },
+      {
+        "from": "cross_validate",
+        "to": "train_model",
+        "data": [
+          "cv_scores"
+        ]
+      },
+      {
+        "from": "train_model",
+        "to": "predict_and_export",
+        "data": [
+          "trained_model"
+        ]
+      },
+      {
+        "from": "encode_categoricals",
+        "to": "predict_and_export",
+        "data": [
+          "encoded_test_df"
+        ]
+      },
+      {
+        "from": "load_data",
+        "to": "predict_and_export",
+        "data": [
+          "sample_submission_df"
+        ]
+      }
+    ],
+    "workers": [
+      "laptop",
+      "workstation",
+      "cloud_cpu",
+      "cloud_gpu_1",
+      "cloud_gpu_2"
+    ]
+  }
+]
