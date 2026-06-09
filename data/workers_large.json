@@ -1,0 +1,122 @@
+[
+  {
+    "worker_id": "laptop",
+    "device_name": "MacBook Pro 14-inch (M3 Pro)",
+    "provides": { "CPU": 2, "GPU": 0 },
+    "location": "local"
+  },
+  {
+    "worker_id": "workstation",
+    "device_name": "Dell Precision 5820",
+    "provides": { "CPU": 8, "GPU": 0 },
+    "location": "on_premises"
+  },
+  {
+    "worker_id": "cloud_cpu_1",
+    "device_name": "AWS c6i.4xlarge",
+    "provides": { "CPU": 8, "GPU": 0 },
+    "location": "cloud_aws"
+  },
+  {
+    "worker_id": "cloud_cpu_2",
+    "device_name": "AWS c6i.2xlarge",
+    "provides": { "CPU": 4, "GPU": 0 },
+    "location": "cloud_aws"
+  },
+  {
+    "worker_id": "cloud_cpu_3",
+    "device_name": "AWS c6i.xlarge",
+    "provides": { "CPU": 2, "GPU": 0 },
+    "location": "cloud_aws"
+  },
+  {
+    "worker_id": "cloud_cpu_4",
+    "device_name": "GCP n2-standard-8",
+    "provides": { "CPU": 8, "GPU": 0 },
+    "location": "cloud_gcp"
+  },
+  {
+    "worker_id": "cloud_cpu_5",
+    "device_name": "GCP n2-standard-4",
+    "provides": { "CPU": 4, "GPU": 0 },
+    "location": "cloud_gcp"
+  },
+  {
+    "worker_id": "cloud_cpu_6",
+    "device_name": "Azure Standard_F8s_v2",
+    "provides": { "CPU": 8, "GPU": 0 },
+    "location": "cloud_azure"
+  },
+  {
+    "worker_id": "cloud_cpu_7",
+    "device_name": "Azure Standard_F4s_v2",
+    "provides": { "CPU": 4, "GPU": 0 },
+    "location": "cloud_azure"
+  },
+  {
+    "worker_id": "cloud_cpu_8",
+    "device_name": "Azure Standard_F2s_v2",
+    "provides": { "CPU": 2, "GPU": 0 },
+    "location": "cloud_azure"
+  },
+  {
+    "worker_id": "cloud_gpu_1",
+    "device_name": "AWS p3.2xlarge",
+    "provides": { "CPU": 8, "GPU": 1 },
+    "location": "cloud_aws"
+  },
+  {
+    "worker_id": "cloud_gpu_2",
+    "device_name": "AWS p3.8xlarge",
+    "provides": { "CPU": 8, "GPU": 1 },
+    "location": "cloud_aws"
+  },
+  {
+    "worker_id": "cloud_gpu_3",
+    "device_name": "AWS g4dn.2xlarge",
+    "provides": { "CPU": 8, "GPU": 1 },
+    "location": "cloud_aws"
+  },
+  {
+    "worker_id": "cloud_gpu_4",
+    "device_name": "GCP n1-standard-8 + T4",
+    "provides": { "CPU": 8, "GPU": 1 },
+    "location": "cloud_gcp"
+  },
+  {
+    "worker_id": "cloud_gpu_5",
+    "device_name": "GCP n1-standard-8 + V100",
+    "provides": { "CPU": 8, "GPU": 1 },
+    "location": "cloud_gcp"
+  },
+  {
+    "worker_id": "cloud_gpu_6",
+    "device_name": "GCP a2-highgpu-1g",
+    "provides": { "CPU": 8, "GPU": 1 },
+    "location": "cloud_gcp"
+  },
+  {
+    "worker_id": "cloud_gpu_7",
+    "device_name": "Azure Standard_NC6s_v3",
+    "provides": { "CPU": 6, "GPU": 1 },
+    "location": "cloud_azure"
+  },
+  {
+    "worker_id": "cloud_gpu_8",
+    "device_name": "Azure Standard_NC4as_T4_v3",
+    "provides": { "CPU": 4, "GPU": 1 },
+    "location": "cloud_azure"
+  },
+  {
+    "worker_id": "cloud_gpu_9",
+    "device_name": "Azure Standard_ND6s",
+    "provides": { "CPU": 6, "GPU": 1 },
+    "location": "cloud_azure"
+  },
+  {
+    "worker_id": "cloud_gpu_10",
+    "device_name": "AWS g5.2xlarge",
+    "provides": { "CPU": 8, "GPU": 1 },
+    "location": "cloud_aws"
+  }
+]
