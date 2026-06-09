@@ -1,0 +1,5885 @@
+[
+  {
+    "task_id": "syn_ml-pipeline-027",
+    "task_description": "A synthetic scalable machine learning pipeline with 2 parts and 3 folds to test larger schedules.",
+    "dag_nodes": [
+      {
+        "id": "load_data_part_0",
+        "name": "Load Data Part 0",
+        "description": "Load subset of input raw data for part 0",
+        "processing_time": 76,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "clean_data_part_0",
+        "name": "Clean Data Part 0",
+        "description": "Standardize columns and clean values for part 0",
+        "processing_time": 67,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "impute_data_part_0",
+        "name": "Impute Missing Part 0",
+        "description": "Impute missing features for part 0",
+        "processing_time": 71,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_numeric_part_0",
+        "name": "Extract Numeric Features Part 0",
+        "description": "Scale and extract statistical features for part 0",
+        "processing_time": 180,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_text_part_0",
+        "name": "Extract Text Features Part 0",
+        "description": "Apply TF-IDF / SVD to text fields for part 0",
+        "processing_time": 213,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_image_part_0",
+        "name": "Extract Image Features Part 0",
+        "description": "Run ResNet/ViT feature extractor for part 0",
+        "processing_time": 353,
+        "requires": {
+          "CPU": 4,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "fuse_features_part_0",
+        "name": "Fuse Features Part 0",
+        "description": "Combine numeric, text, and image features for part 0",
+        "processing_time": 108,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_0_fold_0",
+        "name": "Train Model Part 0 Fold 0",
+        "description": "Train GBDT or deep neural net on fold 0 of part 0",
+        "processing_time": 660,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_0_fold_0",
+        "name": "Evaluate Model Part 0 Fold 0",
+        "description": "Validate model predictions on validation fold 0 of part 0",
+        "processing_time": 227,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_0_fold_1",
+        "name": "Train Model Part 0 Fold 1",
+        "description": "Train GBDT or deep neural net on fold 1 of part 0",
+        "processing_time": 616,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_0_fold_1",
+        "name": "Evaluate Model Part 0 Fold 1",
+        "description": "Validate model predictions on validation fold 1 of part 0",
+        "processing_time": 105,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_0_fold_2",
+        "name": "Train Model Part 0 Fold 2",
+        "description": "Train GBDT or deep neural net on fold 2 of part 0",
+        "processing_time": 587,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_0_fold_2",
+        "name": "Evaluate Model Part 0 Fold 2",
+        "description": "Validate model predictions on validation fold 2 of part 0",
+        "processing_time": 193,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "load_data_part_1",
+        "name": "Load Data Part 1",
+        "description": "Load subset of input raw data for part 1",
+        "processing_time": 83,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "clean_data_part_1",
+        "name": "Clean Data Part 1",
+        "description": "Standardize columns and clean values for part 1",
+        "processing_time": 112,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "impute_data_part_1",
+        "name": "Impute Missing Part 1",
+        "description": "Impute missing features for part 1",
+        "processing_time": 68,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_numeric_part_1",
+        "name": "Extract Numeric Features Part 1",
+        "description": "Scale and extract statistical features for part 1",
+        "processing_time": 137,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_text_part_1",
+        "name": "Extract Text Features Part 1",
+        "description": "Apply TF-IDF / SVD to text fields for part 1",
+        "processing_time": 219,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_image_part_1",
+        "name": "Extract Image Features Part 1",
+        "description": "Run ResNet/ViT feature extractor for part 1",
+        "processing_time": 328,
+        "requires": {
+          "CPU": 4,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "fuse_features_part_1",
+        "name": "Fuse Features Part 1",
+        "description": "Combine numeric, text, and image features for part 1",
+        "processing_time": 153,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_1_fold_0",
+        "name": "Train Model Part 1 Fold 0",
+        "description": "Train GBDT or deep neural net on fold 0 of part 1",
+        "processing_time": 545,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_1_fold_0",
+        "name": "Evaluate Model Part 1 Fold 0",
+        "description": "Validate model predictions on validation fold 0 of part 1",
+        "processing_time": 221,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_1_fold_1",
+        "name": "Train Model Part 1 Fold 1",
+        "description": "Train GBDT or deep neural net on fold 1 of part 1",
+        "processing_time": 728,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_1_fold_1",
+        "name": "Evaluate Model Part 1 Fold 1",
+        "description": "Validate model predictions on validation fold 1 of part 1",
+        "processing_time": 206,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_1_fold_2",
+        "name": "Train Model Part 1 Fold 2",
+        "description": "Train GBDT or deep neural net on fold 2 of part 1",
+        "processing_time": 769,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_1_fold_2",
+        "name": "Evaluate Model Part 1 Fold 2",
+        "description": "Validate model predictions on validation fold 2 of part 1",
+        "processing_time": 151,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "ensemble_predictions",
+        "name": "Ensemble Predictions",
+        "description": "Perform final soft-voting ensemble across all folds and parts",
+        "processing_time": 192,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      }
+    ],
+    "dag_edges": [
+      {
+        "from": "load_data_part_0",
+        "to": "clean_data_part_0",
+        "data": [
+          "raw_data_part_0"
+        ]
+      },
+      {
+        "from": "clean_data_part_0",
+        "to": "impute_data_part_0",
+        "data": [
+          "cleaned_data_part_0"
+        ]
+      },
+      {
+        "from": "impute_data_part_0",
+        "to": "extract_numeric_part_0",
+        "data": [
+          "imputed_data_part_0"
+        ]
+      },
+      {
+        "from": "impute_data_part_0",
+        "to": "extract_text_part_0",
+        "data": [
+          "imputed_data_part_0"
+        ]
+      },
+      {
+        "from": "impute_data_part_0",
+        "to": "extract_image_part_0",
+        "data": [
+          "imputed_data_part_0"
+        ]
+      },
+      {
+        "from": "extract_numeric_part_0",
+        "to": "fuse_features_part_0",
+        "data": [
+          "numeric_features_part_0"
+        ]
+      },
+      {
+        "from": "extract_text_part_0",
+        "to": "fuse_features_part_0",
+        "data": [
+          "text_features_part_0"
+        ]
+      },
+      {
+        "from": "extract_image_part_0",
+        "to": "fuse_features_part_0",
+        "data": [
+          "image_features_part_0"
+        ]
+      },
+      {
+        "from": "fuse_features_part_0",
+        "to": "train_model_part_0_fold_0",
+        "data": [
+          "fused_features_part_0"
+        ]
+      },
+      {
+        "from": "train_model_part_0_fold_0",
+        "to": "evaluate_model_part_0_fold_0",
+        "data": [
+          "model_part_0_fold_0"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_0_fold_0",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_0_fold_0"
+        ]
+      },
+      {
+        "from": "fuse_features_part_0",
+        "to": "train_model_part_0_fold_1",
+        "data": [
+          "fused_features_part_0"
+        ]
+      },
+      {
+        "from": "train_model_part_0_fold_1",
+        "to": "evaluate_model_part_0_fold_1",
+        "data": [
+          "model_part_0_fold_1"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_0_fold_1",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_0_fold_1"
+        ]
+      },
+      {
+        "from": "fuse_features_part_0",
+        "to": "train_model_part_0_fold_2",
+        "data": [
+          "fused_features_part_0"
+        ]
+      },
+      {
+        "from": "train_model_part_0_fold_2",
+        "to": "evaluate_model_part_0_fold_2",
+        "data": [
+          "model_part_0_fold_2"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_0_fold_2",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_0_fold_2"
+        ]
+      },
+      {
+        "from": "load_data_part_1",
+        "to": "clean_data_part_1",
+        "data": [
+          "raw_data_part_1"
+        ]
+      },
+      {
+        "from": "clean_data_part_1",
+        "to": "impute_data_part_1",
+        "data": [
+          "cleaned_data_part_1"
+        ]
+      },
+      {
+        "from": "impute_data_part_1",
+        "to": "extract_numeric_part_1",
+        "data": [
+          "imputed_data_part_1"
+        ]
+      },
+      {
+        "from": "impute_data_part_1",
+        "to": "extract_text_part_1",
+        "data": [
+          "imputed_data_part_1"
+        ]
+      },
+      {
+        "from": "impute_data_part_1",
+        "to": "extract_image_part_1",
+        "data": [
+          "imputed_data_part_1"
+        ]
+      },
+      {
+        "from": "extract_numeric_part_1",
+        "to": "fuse_features_part_1",
+        "data": [
+          "numeric_features_part_1"
+        ]
+      },
+      {
+        "from": "extract_text_part_1",
+        "to": "fuse_features_part_1",
+        "data": [
+          "text_features_part_1"
+        ]
+      },
+      {
+        "from": "extract_image_part_1",
+        "to": "fuse_features_part_1",
+        "data": [
+          "image_features_part_1"
+        ]
+      },
+      {
+        "from": "fuse_features_part_1",
+        "to": "train_model_part_1_fold_0",
+        "data": [
+          "fused_features_part_1"
+        ]
+      },
+      {
+        "from": "train_model_part_1_fold_0",
+        "to": "evaluate_model_part_1_fold_0",
+        "data": [
+          "model_part_1_fold_0"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_1_fold_0",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_1_fold_0"
+        ]
+      },
+      {
+        "from": "fuse_features_part_1",
+        "to": "train_model_part_1_fold_1",
+        "data": [
+          "fused_features_part_1"
+        ]
+      },
+      {
+        "from": "train_model_part_1_fold_1",
+        "to": "evaluate_model_part_1_fold_1",
+        "data": [
+          "model_part_1_fold_1"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_1_fold_1",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_1_fold_1"
+        ]
+      },
+      {
+        "from": "fuse_features_part_1",
+        "to": "train_model_part_1_fold_2",
+        "data": [
+          "fused_features_part_1"
+        ]
+      },
+      {
+        "from": "train_model_part_1_fold_2",
+        "to": "evaluate_model_part_1_fold_2",
+        "data": [
+          "model_part_1_fold_2"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_1_fold_2",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_1_fold_2"
+        ]
+      }
+    ],
+    "workers": [
+      "laptop",
+      "workstation",
+      "cloud_cpu",
+      "cloud_gpu_1",
+      "cloud_gpu_2"
+    ]
+  },
+  {
+    "task_id": "syn_ml-pipeline-035",
+    "task_description": "A synthetic scalable machine learning pipeline with 2 parts and 5 folds to test larger schedules.",
+    "dag_nodes": [
+      {
+        "id": "load_data_part_0",
+        "name": "Load Data Part 0",
+        "description": "Load subset of input raw data for part 0",
+        "processing_time": 83,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "clean_data_part_0",
+        "name": "Clean Data Part 0",
+        "description": "Standardize columns and clean values for part 0",
+        "processing_time": 118,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "impute_data_part_0",
+        "name": "Impute Missing Part 0",
+        "description": "Impute missing features for part 0",
+        "processing_time": 72,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_numeric_part_0",
+        "name": "Extract Numeric Features Part 0",
+        "description": "Scale and extract statistical features for part 0",
+        "processing_time": 83,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_text_part_0",
+        "name": "Extract Text Features Part 0",
+        "description": "Apply TF-IDF / SVD to text fields for part 0",
+        "processing_time": 177,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_image_part_0",
+        "name": "Extract Image Features Part 0",
+        "description": "Run ResNet/ViT feature extractor for part 0",
+        "processing_time": 292,
+        "requires": {
+          "CPU": 4,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "fuse_features_part_0",
+        "name": "Fuse Features Part 0",
+        "description": "Combine numeric, text, and image features for part 0",
+        "processing_time": 144,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_0_fold_0",
+        "name": "Train Model Part 0 Fold 0",
+        "description": "Train GBDT or deep neural net on fold 0 of part 0",
+        "processing_time": 360,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_0_fold_0",
+        "name": "Evaluate Model Part 0 Fold 0",
+        "description": "Validate model predictions on validation fold 0 of part 0",
+        "processing_time": 243,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_0_fold_1",
+        "name": "Train Model Part 0 Fold 1",
+        "description": "Train GBDT or deep neural net on fold 1 of part 0",
+        "processing_time": 434,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_0_fold_1",
+        "name": "Evaluate Model Part 0 Fold 1",
+        "description": "Validate model predictions on validation fold 1 of part 0",
+        "processing_time": 221,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_0_fold_2",
+        "name": "Train Model Part 0 Fold 2",
+        "description": "Train GBDT or deep neural net on fold 2 of part 0",
+        "processing_time": 332,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_0_fold_2",
+        "name": "Evaluate Model Part 0 Fold 2",
+        "description": "Validate model predictions on validation fold 2 of part 0",
+        "processing_time": 105,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_0_fold_3",
+        "name": "Train Model Part 0 Fold 3",
+        "description": "Train GBDT or deep neural net on fold 3 of part 0",
+        "processing_time": 779,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_0_fold_3",
+        "name": "Evaluate Model Part 0 Fold 3",
+        "description": "Validate model predictions on validation fold 3 of part 0",
+        "processing_time": 159,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_0_fold_4",
+        "name": "Train Model Part 0 Fold 4",
+        "description": "Train GBDT or deep neural net on fold 4 of part 0",
+        "processing_time": 497,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_0_fold_4",
+        "name": "Evaluate Model Part 0 Fold 4",
+        "description": "Validate model predictions on validation fold 4 of part 0",
+        "processing_time": 240,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "load_data_part_1",
+        "name": "Load Data Part 1",
+        "description": "Load subset of input raw data for part 1",
+        "processing_time": 59,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "clean_data_part_1",
+        "name": "Clean Data Part 1",
+        "description": "Standardize columns and clean values for part 1",
+        "processing_time": 117,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "impute_data_part_1",
+        "name": "Impute Missing Part 1",
+        "description": "Impute missing features for part 1",
+        "processing_time": 72,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_numeric_part_1",
+        "name": "Extract Numeric Features Part 1",
+        "description": "Scale and extract statistical features for part 1",
+        "processing_time": 169,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_text_part_1",
+        "name": "Extract Text Features Part 1",
+        "description": "Apply TF-IDF / SVD to text fields for part 1",
+        "processing_time": 239,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_image_part_1",
+        "name": "Extract Image Features Part 1",
+        "description": "Run ResNet/ViT feature extractor for part 1",
+        "processing_time": 440,
+        "requires": {
+          "CPU": 4,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "fuse_features_part_1",
+        "name": "Fuse Features Part 1",
+        "description": "Combine numeric, text, and image features for part 1",
+        "processing_time": 89,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_1_fold_0",
+        "name": "Train Model Part 1 Fold 0",
+        "description": "Train GBDT or deep neural net on fold 0 of part 1",
+        "processing_time": 317,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_1_fold_0",
+        "name": "Evaluate Model Part 1 Fold 0",
+        "description": "Validate model predictions on validation fold 0 of part 1",
+        "processing_time": 125,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_1_fold_1",
+        "name": "Train Model Part 1 Fold 1",
+        "description": "Train GBDT or deep neural net on fold 1 of part 1",
+        "processing_time": 679,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_1_fold_1",
+        "name": "Evaluate Model Part 1 Fold 1",
+        "description": "Validate model predictions on validation fold 1 of part 1",
+        "processing_time": 101,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_1_fold_2",
+        "name": "Train Model Part 1 Fold 2",
+        "description": "Train GBDT or deep neural net on fold 2 of part 1",
+        "processing_time": 418,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_1_fold_2",
+        "name": "Evaluate Model Part 1 Fold 2",
+        "description": "Validate model predictions on validation fold 2 of part 1",
+        "processing_time": 232,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_1_fold_3",
+        "name": "Train Model Part 1 Fold 3",
+        "description": "Train GBDT or deep neural net on fold 3 of part 1",
+        "processing_time": 654,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_1_fold_3",
+        "name": "Evaluate Model Part 1 Fold 3",
+        "description": "Validate model predictions on validation fold 3 of part 1",
+        "processing_time": 196,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_1_fold_4",
+        "name": "Train Model Part 1 Fold 4",
+        "description": "Train GBDT or deep neural net on fold 4 of part 1",
+        "processing_time": 695,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_1_fold_4",
+        "name": "Evaluate Model Part 1 Fold 4",
+        "description": "Validate model predictions on validation fold 4 of part 1",
+        "processing_time": 236,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "ensemble_predictions",
+        "name": "Ensemble Predictions",
+        "description": "Perform final soft-voting ensemble across all folds and parts",
+        "processing_time": 214,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      }
+    ],
+    "dag_edges": [
+      {
+        "from": "load_data_part_0",
+        "to": "clean_data_part_0",
+        "data": [
+          "raw_data_part_0"
+        ]
+      },
+      {
+        "from": "clean_data_part_0",
+        "to": "impute_data_part_0",
+        "data": [
+          "cleaned_data_part_0"
+        ]
+      },
+      {
+        "from": "impute_data_part_0",
+        "to": "extract_numeric_part_0",
+        "data": [
+          "imputed_data_part_0"
+        ]
+      },
+      {
+        "from": "impute_data_part_0",
+        "to": "extract_text_part_0",
+        "data": [
+          "imputed_data_part_0"
+        ]
+      },
+      {
+        "from": "impute_data_part_0",
+        "to": "extract_image_part_0",
+        "data": [
+          "imputed_data_part_0"
+        ]
+      },
+      {
+        "from": "extract_numeric_part_0",
+        "to": "fuse_features_part_0",
+        "data": [
+          "numeric_features_part_0"
+        ]
+      },
+      {
+        "from": "extract_text_part_0",
+        "to": "fuse_features_part_0",
+        "data": [
+          "text_features_part_0"
+        ]
+      },
+      {
+        "from": "extract_image_part_0",
+        "to": "fuse_features_part_0",
+        "data": [
+          "image_features_part_0"
+        ]
+      },
+      {
+        "from": "fuse_features_part_0",
+        "to": "train_model_part_0_fold_0",
+        "data": [
+          "fused_features_part_0"
+        ]
+      },
+      {
+        "from": "train_model_part_0_fold_0",
+        "to": "evaluate_model_part_0_fold_0",
+        "data": [
+          "model_part_0_fold_0"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_0_fold_0",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_0_fold_0"
+        ]
+      },
+      {
+        "from": "fuse_features_part_0",
+        "to": "train_model_part_0_fold_1",
+        "data": [
+          "fused_features_part_0"
+        ]
+      },
+      {
+        "from": "train_model_part_0_fold_1",
+        "to": "evaluate_model_part_0_fold_1",
+        "data": [
+          "model_part_0_fold_1"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_0_fold_1",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_0_fold_1"
+        ]
+      },
+      {
+        "from": "fuse_features_part_0",
+        "to": "train_model_part_0_fold_2",
+        "data": [
+          "fused_features_part_0"
+        ]
+      },
+      {
+        "from": "train_model_part_0_fold_2",
+        "to": "evaluate_model_part_0_fold_2",
+        "data": [
+          "model_part_0_fold_2"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_0_fold_2",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_0_fold_2"
+        ]
+      },
+      {
+        "from": "fuse_features_part_0",
+        "to": "train_model_part_0_fold_3",
+        "data": [
+          "fused_features_part_0"
+        ]
+      },
+      {
+        "from": "train_model_part_0_fold_3",
+        "to": "evaluate_model_part_0_fold_3",
+        "data": [
+          "model_part_0_fold_3"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_0_fold_3",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_0_fold_3"
+        ]
+      },
+      {
+        "from": "fuse_features_part_0",
+        "to": "train_model_part_0_fold_4",
+        "data": [
+          "fused_features_part_0"
+        ]
+      },
+      {
+        "from": "train_model_part_0_fold_4",
+        "to": "evaluate_model_part_0_fold_4",
+        "data": [
+          "model_part_0_fold_4"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_0_fold_4",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_0_fold_4"
+        ]
+      },
+      {
+        "from": "load_data_part_1",
+        "to": "clean_data_part_1",
+        "data": [
+          "raw_data_part_1"
+        ]
+      },
+      {
+        "from": "clean_data_part_1",
+        "to": "impute_data_part_1",
+        "data": [
+          "cleaned_data_part_1"
+        ]
+      },
+      {
+        "from": "impute_data_part_1",
+        "to": "extract_numeric_part_1",
+        "data": [
+          "imputed_data_part_1"
+        ]
+      },
+      {
+        "from": "impute_data_part_1",
+        "to": "extract_text_part_1",
+        "data": [
+          "imputed_data_part_1"
+        ]
+      },
+      {
+        "from": "impute_data_part_1",
+        "to": "extract_image_part_1",
+        "data": [
+          "imputed_data_part_1"
+        ]
+      },
+      {
+        "from": "extract_numeric_part_1",
+        "to": "fuse_features_part_1",
+        "data": [
+          "numeric_features_part_1"
+        ]
+      },
+      {
+        "from": "extract_text_part_1",
+        "to": "fuse_features_part_1",
+        "data": [
+          "text_features_part_1"
+        ]
+      },
+      {
+        "from": "extract_image_part_1",
+        "to": "fuse_features_part_1",
+        "data": [
+          "image_features_part_1"
+        ]
+      },
+      {
+        "from": "fuse_features_part_1",
+        "to": "train_model_part_1_fold_0",
+        "data": [
+          "fused_features_part_1"
+        ]
+      },
+      {
+        "from": "train_model_part_1_fold_0",
+        "to": "evaluate_model_part_1_fold_0",
+        "data": [
+          "model_part_1_fold_0"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_1_fold_0",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_1_fold_0"
+        ]
+      },
+      {
+        "from": "fuse_features_part_1",
+        "to": "train_model_part_1_fold_1",
+        "data": [
+          "fused_features_part_1"
+        ]
+      },
+      {
+        "from": "train_model_part_1_fold_1",
+        "to": "evaluate_model_part_1_fold_1",
+        "data": [
+          "model_part_1_fold_1"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_1_fold_1",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_1_fold_1"
+        ]
+      },
+      {
+        "from": "fuse_features_part_1",
+        "to": "train_model_part_1_fold_2",
+        "data": [
+          "fused_features_part_1"
+        ]
+      },
+      {
+        "from": "train_model_part_1_fold_2",
+        "to": "evaluate_model_part_1_fold_2",
+        "data": [
+          "model_part_1_fold_2"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_1_fold_2",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_1_fold_2"
+        ]
+      },
+      {
+        "from": "fuse_features_part_1",
+        "to": "train_model_part_1_fold_3",
+        "data": [
+          "fused_features_part_1"
+        ]
+      },
+      {
+        "from": "train_model_part_1_fold_3",
+        "to": "evaluate_model_part_1_fold_3",
+        "data": [
+          "model_part_1_fold_3"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_1_fold_3",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_1_fold_3"
+        ]
+      },
+      {
+        "from": "fuse_features_part_1",
+        "to": "train_model_part_1_fold_4",
+        "data": [
+          "fused_features_part_1"
+        ]
+      },
+      {
+        "from": "train_model_part_1_fold_4",
+        "to": "evaluate_model_part_1_fold_4",
+        "data": [
+          "model_part_1_fold_4"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_1_fold_4",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_1_fold_4"
+        ]
+      }
+    ],
+    "workers": [
+      "laptop",
+      "workstation",
+      "cloud_cpu",
+      "cloud_gpu_1",
+      "cloud_gpu_2"
+    ]
+  },
+  {
+    "task_id": "syn_ml-pipeline-046",
+    "task_description": "A synthetic scalable machine learning pipeline with 3 parts and 4 folds to test larger schedules.",
+    "dag_nodes": [
+      {
+        "id": "load_data_part_0",
+        "name": "Load Data Part 0",
+        "description": "Load subset of input raw data for part 0",
+        "processing_time": 93,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "clean_data_part_0",
+        "name": "Clean Data Part 0",
+        "description": "Standardize columns and clean values for part 0",
+        "processing_time": 66,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "impute_data_part_0",
+        "name": "Impute Missing Part 0",
+        "description": "Impute missing features for part 0",
+        "processing_time": 116,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_numeric_part_0",
+        "name": "Extract Numeric Features Part 0",
+        "description": "Scale and extract statistical features for part 0",
+        "processing_time": 171,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_text_part_0",
+        "name": "Extract Text Features Part 0",
+        "description": "Apply TF-IDF / SVD to text fields for part 0",
+        "processing_time": 213,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_image_part_0",
+        "name": "Extract Image Features Part 0",
+        "description": "Run ResNet/ViT feature extractor for part 0",
+        "processing_time": 312,
+        "requires": {
+          "CPU": 4,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "fuse_features_part_0",
+        "name": "Fuse Features Part 0",
+        "description": "Combine numeric, text, and image features for part 0",
+        "processing_time": 128,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_0_fold_0",
+        "name": "Train Model Part 0 Fold 0",
+        "description": "Train GBDT or deep neural net on fold 0 of part 0",
+        "processing_time": 566,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_0_fold_0",
+        "name": "Evaluate Model Part 0 Fold 0",
+        "description": "Validate model predictions on validation fold 0 of part 0",
+        "processing_time": 170,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_0_fold_1",
+        "name": "Train Model Part 0 Fold 1",
+        "description": "Train GBDT or deep neural net on fold 1 of part 0",
+        "processing_time": 779,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_0_fold_1",
+        "name": "Evaluate Model Part 0 Fold 1",
+        "description": "Validate model predictions on validation fold 1 of part 0",
+        "processing_time": 179,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_0_fold_2",
+        "name": "Train Model Part 0 Fold 2",
+        "description": "Train GBDT or deep neural net on fold 2 of part 0",
+        "processing_time": 767,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_0_fold_2",
+        "name": "Evaluate Model Part 0 Fold 2",
+        "description": "Validate model predictions on validation fold 2 of part 0",
+        "processing_time": 189,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_0_fold_3",
+        "name": "Train Model Part 0 Fold 3",
+        "description": "Train GBDT or deep neural net on fold 3 of part 0",
+        "processing_time": 770,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_0_fold_3",
+        "name": "Evaluate Model Part 0 Fold 3",
+        "description": "Validate model predictions on validation fold 3 of part 0",
+        "processing_time": 156,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "load_data_part_1",
+        "name": "Load Data Part 1",
+        "description": "Load subset of input raw data for part 1",
+        "processing_time": 67,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "clean_data_part_1",
+        "name": "Clean Data Part 1",
+        "description": "Standardize columns and clean values for part 1",
+        "processing_time": 111,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "impute_data_part_1",
+        "name": "Impute Missing Part 1",
+        "description": "Impute missing features for part 1",
+        "processing_time": 85,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_numeric_part_1",
+        "name": "Extract Numeric Features Part 1",
+        "description": "Scale and extract statistical features for part 1",
+        "processing_time": 180,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_text_part_1",
+        "name": "Extract Text Features Part 1",
+        "description": "Apply TF-IDF / SVD to text fields for part 1",
+        "processing_time": 332,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_image_part_1",
+        "name": "Extract Image Features Part 1",
+        "description": "Run ResNet/ViT feature extractor for part 1",
+        "processing_time": 312,
+        "requires": {
+          "CPU": 4,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "fuse_features_part_1",
+        "name": "Fuse Features Part 1",
+        "description": "Combine numeric, text, and image features for part 1",
+        "processing_time": 140,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_1_fold_0",
+        "name": "Train Model Part 1 Fold 0",
+        "description": "Train GBDT or deep neural net on fold 0 of part 1",
+        "processing_time": 373,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_1_fold_0",
+        "name": "Evaluate Model Part 1 Fold 0",
+        "description": "Validate model predictions on validation fold 0 of part 1",
+        "processing_time": 128,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_1_fold_1",
+        "name": "Train Model Part 1 Fold 1",
+        "description": "Train GBDT or deep neural net on fold 1 of part 1",
+        "processing_time": 637,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_1_fold_1",
+        "name": "Evaluate Model Part 1 Fold 1",
+        "description": "Validate model predictions on validation fold 1 of part 1",
+        "processing_time": 230,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_1_fold_2",
+        "name": "Train Model Part 1 Fold 2",
+        "description": "Train GBDT or deep neural net on fold 2 of part 1",
+        "processing_time": 366,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_1_fold_2",
+        "name": "Evaluate Model Part 1 Fold 2",
+        "description": "Validate model predictions on validation fold 2 of part 1",
+        "processing_time": 175,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_1_fold_3",
+        "name": "Train Model Part 1 Fold 3",
+        "description": "Train GBDT or deep neural net on fold 3 of part 1",
+        "processing_time": 514,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_1_fold_3",
+        "name": "Evaluate Model Part 1 Fold 3",
+        "description": "Validate model predictions on validation fold 3 of part 1",
+        "processing_time": 153,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "load_data_part_2",
+        "name": "Load Data Part 2",
+        "description": "Load subset of input raw data for part 2",
+        "processing_time": 53,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "clean_data_part_2",
+        "name": "Clean Data Part 2",
+        "description": "Standardize columns and clean values for part 2",
+        "processing_time": 117,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "impute_data_part_2",
+        "name": "Impute Missing Part 2",
+        "description": "Impute missing features for part 2",
+        "processing_time": 67,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_numeric_part_2",
+        "name": "Extract Numeric Features Part 2",
+        "description": "Scale and extract statistical features for part 2",
+        "processing_time": 134,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_text_part_2",
+        "name": "Extract Text Features Part 2",
+        "description": "Apply TF-IDF / SVD to text fields for part 2",
+        "processing_time": 181,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_image_part_2",
+        "name": "Extract Image Features Part 2",
+        "description": "Run ResNet/ViT feature extractor for part 2",
+        "processing_time": 451,
+        "requires": {
+          "CPU": 4,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "fuse_features_part_2",
+        "name": "Fuse Features Part 2",
+        "description": "Combine numeric, text, and image features for part 2",
+        "processing_time": 136,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_2_fold_0",
+        "name": "Train Model Part 2 Fold 0",
+        "description": "Train GBDT or deep neural net on fold 0 of part 2",
+        "processing_time": 493,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_2_fold_0",
+        "name": "Evaluate Model Part 2 Fold 0",
+        "description": "Validate model predictions on validation fold 0 of part 2",
+        "processing_time": 129,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_2_fold_1",
+        "name": "Train Model Part 2 Fold 1",
+        "description": "Train GBDT or deep neural net on fold 1 of part 2",
+        "processing_time": 600,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_2_fold_1",
+        "name": "Evaluate Model Part 2 Fold 1",
+        "description": "Validate model predictions on validation fold 1 of part 2",
+        "processing_time": 210,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_2_fold_2",
+        "name": "Train Model Part 2 Fold 2",
+        "description": "Train GBDT or deep neural net on fold 2 of part 2",
+        "processing_time": 793,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_2_fold_2",
+        "name": "Evaluate Model Part 2 Fold 2",
+        "description": "Validate model predictions on validation fold 2 of part 2",
+        "processing_time": 203,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_2_fold_3",
+        "name": "Train Model Part 2 Fold 3",
+        "description": "Train GBDT or deep neural net on fold 3 of part 2",
+        "processing_time": 367,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_2_fold_3",
+        "name": "Evaluate Model Part 2 Fold 3",
+        "description": "Validate model predictions on validation fold 3 of part 2",
+        "processing_time": 212,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "ensemble_predictions",
+        "name": "Ensemble Predictions",
+        "description": "Perform final soft-voting ensemble across all folds and parts",
+        "processing_time": 156,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      }
+    ],
+    "dag_edges": [
+      {
+        "from": "load_data_part_0",
+        "to": "clean_data_part_0",
+        "data": [
+          "raw_data_part_0"
+        ]
+      },
+      {
+        "from": "clean_data_part_0",
+        "to": "impute_data_part_0",
+        "data": [
+          "cleaned_data_part_0"
+        ]
+      },
+      {
+        "from": "impute_data_part_0",
+        "to": "extract_numeric_part_0",
+        "data": [
+          "imputed_data_part_0"
+        ]
+      },
+      {
+        "from": "impute_data_part_0",
+        "to": "extract_text_part_0",
+        "data": [
+          "imputed_data_part_0"
+        ]
+      },
+      {
+        "from": "impute_data_part_0",
+        "to": "extract_image_part_0",
+        "data": [
+          "imputed_data_part_0"
+        ]
+      },
+      {
+        "from": "extract_numeric_part_0",
+        "to": "fuse_features_part_0",
+        "data": [
+          "numeric_features_part_0"
+        ]
+      },
+      {
+        "from": "extract_text_part_0",
+        "to": "fuse_features_part_0",
+        "data": [
+          "text_features_part_0"
+        ]
+      },
+      {
+        "from": "extract_image_part_0",
+        "to": "fuse_features_part_0",
+        "data": [
+          "image_features_part_0"
+        ]
+      },
+      {
+        "from": "fuse_features_part_0",
+        "to": "train_model_part_0_fold_0",
+        "data": [
+          "fused_features_part_0"
+        ]
+      },
+      {
+        "from": "train_model_part_0_fold_0",
+        "to": "evaluate_model_part_0_fold_0",
+        "data": [
+          "model_part_0_fold_0"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_0_fold_0",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_0_fold_0"
+        ]
+      },
+      {
+        "from": "fuse_features_part_0",
+        "to": "train_model_part_0_fold_1",
+        "data": [
+          "fused_features_part_0"
+        ]
+      },
+      {
+        "from": "train_model_part_0_fold_1",
+        "to": "evaluate_model_part_0_fold_1",
+        "data": [
+          "model_part_0_fold_1"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_0_fold_1",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_0_fold_1"
+        ]
+      },
+      {
+        "from": "fuse_features_part_0",
+        "to": "train_model_part_0_fold_2",
+        "data": [
+          "fused_features_part_0"
+        ]
+      },
+      {
+        "from": "train_model_part_0_fold_2",
+        "to": "evaluate_model_part_0_fold_2",
+        "data": [
+          "model_part_0_fold_2"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_0_fold_2",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_0_fold_2"
+        ]
+      },
+      {
+        "from": "fuse_features_part_0",
+        "to": "train_model_part_0_fold_3",
+        "data": [
+          "fused_features_part_0"
+        ]
+      },
+      {
+        "from": "train_model_part_0_fold_3",
+        "to": "evaluate_model_part_0_fold_3",
+        "data": [
+          "model_part_0_fold_3"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_0_fold_3",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_0_fold_3"
+        ]
+      },
+      {
+        "from": "load_data_part_1",
+        "to": "clean_data_part_1",
+        "data": [
+          "raw_data_part_1"
+        ]
+      },
+      {
+        "from": "clean_data_part_1",
+        "to": "impute_data_part_1",
+        "data": [
+          "cleaned_data_part_1"
+        ]
+      },
+      {
+        "from": "impute_data_part_1",
+        "to": "extract_numeric_part_1",
+        "data": [
+          "imputed_data_part_1"
+        ]
+      },
+      {
+        "from": "impute_data_part_1",
+        "to": "extract_text_part_1",
+        "data": [
+          "imputed_data_part_1"
+        ]
+      },
+      {
+        "from": "impute_data_part_1",
+        "to": "extract_image_part_1",
+        "data": [
+          "imputed_data_part_1"
+        ]
+      },
+      {
+        "from": "extract_numeric_part_1",
+        "to": "fuse_features_part_1",
+        "data": [
+          "numeric_features_part_1"
+        ]
+      },
+      {
+        "from": "extract_text_part_1",
+        "to": "fuse_features_part_1",
+        "data": [
+          "text_features_part_1"
+        ]
+      },
+      {
+        "from": "extract_image_part_1",
+        "to": "fuse_features_part_1",
+        "data": [
+          "image_features_part_1"
+        ]
+      },
+      {
+        "from": "fuse_features_part_1",
+        "to": "train_model_part_1_fold_0",
+        "data": [
+          "fused_features_part_1"
+        ]
+      },
+      {
+        "from": "train_model_part_1_fold_0",
+        "to": "evaluate_model_part_1_fold_0",
+        "data": [
+          "model_part_1_fold_0"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_1_fold_0",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_1_fold_0"
+        ]
+      },
+      {
+        "from": "fuse_features_part_1",
+        "to": "train_model_part_1_fold_1",
+        "data": [
+          "fused_features_part_1"
+        ]
+      },
+      {
+        "from": "train_model_part_1_fold_1",
+        "to": "evaluate_model_part_1_fold_1",
+        "data": [
+          "model_part_1_fold_1"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_1_fold_1",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_1_fold_1"
+        ]
+      },
+      {
+        "from": "fuse_features_part_1",
+        "to": "train_model_part_1_fold_2",
+        "data": [
+          "fused_features_part_1"
+        ]
+      },
+      {
+        "from": "train_model_part_1_fold_2",
+        "to": "evaluate_model_part_1_fold_2",
+        "data": [
+          "model_part_1_fold_2"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_1_fold_2",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_1_fold_2"
+        ]
+      },
+      {
+        "from": "fuse_features_part_1",
+        "to": "train_model_part_1_fold_3",
+        "data": [
+          "fused_features_part_1"
+        ]
+      },
+      {
+        "from": "train_model_part_1_fold_3",
+        "to": "evaluate_model_part_1_fold_3",
+        "data": [
+          "model_part_1_fold_3"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_1_fold_3",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_1_fold_3"
+        ]
+      },
+      {
+        "from": "load_data_part_2",
+        "to": "clean_data_part_2",
+        "data": [
+          "raw_data_part_2"
+        ]
+      },
+      {
+        "from": "clean_data_part_2",
+        "to": "impute_data_part_2",
+        "data": [
+          "cleaned_data_part_2"
+        ]
+      },
+      {
+        "from": "impute_data_part_2",
+        "to": "extract_numeric_part_2",
+        "data": [
+          "imputed_data_part_2"
+        ]
+      },
+      {
+        "from": "impute_data_part_2",
+        "to": "extract_text_part_2",
+        "data": [
+          "imputed_data_part_2"
+        ]
+      },
+      {
+        "from": "impute_data_part_2",
+        "to": "extract_image_part_2",
+        "data": [
+          "imputed_data_part_2"
+        ]
+      },
+      {
+        "from": "extract_numeric_part_2",
+        "to": "fuse_features_part_2",
+        "data": [
+          "numeric_features_part_2"
+        ]
+      },
+      {
+        "from": "extract_text_part_2",
+        "to": "fuse_features_part_2",
+        "data": [
+          "text_features_part_2"
+        ]
+      },
+      {
+        "from": "extract_image_part_2",
+        "to": "fuse_features_part_2",
+        "data": [
+          "image_features_part_2"
+        ]
+      },
+      {
+        "from": "fuse_features_part_2",
+        "to": "train_model_part_2_fold_0",
+        "data": [
+          "fused_features_part_2"
+        ]
+      },
+      {
+        "from": "train_model_part_2_fold_0",
+        "to": "evaluate_model_part_2_fold_0",
+        "data": [
+          "model_part_2_fold_0"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_2_fold_0",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_2_fold_0"
+        ]
+      },
+      {
+        "from": "fuse_features_part_2",
+        "to": "train_model_part_2_fold_1",
+        "data": [
+          "fused_features_part_2"
+        ]
+      },
+      {
+        "from": "train_model_part_2_fold_1",
+        "to": "evaluate_model_part_2_fold_1",
+        "data": [
+          "model_part_2_fold_1"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_2_fold_1",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_2_fold_1"
+        ]
+      },
+      {
+        "from": "fuse_features_part_2",
+        "to": "train_model_part_2_fold_2",
+        "data": [
+          "fused_features_part_2"
+        ]
+      },
+      {
+        "from": "train_model_part_2_fold_2",
+        "to": "evaluate_model_part_2_fold_2",
+        "data": [
+          "model_part_2_fold_2"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_2_fold_2",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_2_fold_2"
+        ]
+      },
+      {
+        "from": "fuse_features_part_2",
+        "to": "train_model_part_2_fold_3",
+        "data": [
+          "fused_features_part_2"
+        ]
+      },
+      {
+        "from": "train_model_part_2_fold_3",
+        "to": "evaluate_model_part_2_fold_3",
+        "data": [
+          "model_part_2_fold_3"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_2_fold_3",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_2_fold_3"
+        ]
+      }
+    ],
+    "workers": [
+      "laptop",
+      "workstation",
+      "cloud_cpu",
+      "cloud_gpu_1",
+      "cloud_gpu_2"
+    ]
+  },
+  {
+    "task_id": "syn_ml-pipeline-052",
+    "task_description": "A synthetic scalable machine learning pipeline with 3 parts and 5 folds to test larger schedules.",
+    "dag_nodes": [
+      {
+        "id": "load_data_part_0",
+        "name": "Load Data Part 0",
+        "description": "Load subset of input raw data for part 0",
+        "processing_time": 68,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "clean_data_part_0",
+        "name": "Clean Data Part 0",
+        "description": "Standardize columns and clean values for part 0",
+        "processing_time": 95,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "impute_data_part_0",
+        "name": "Impute Missing Part 0",
+        "description": "Impute missing features for part 0",
+        "processing_time": 117,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_numeric_part_0",
+        "name": "Extract Numeric Features Part 0",
+        "description": "Scale and extract statistical features for part 0",
+        "processing_time": 178,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_text_part_0",
+        "name": "Extract Text Features Part 0",
+        "description": "Apply TF-IDF / SVD to text fields for part 0",
+        "processing_time": 246,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_image_part_0",
+        "name": "Extract Image Features Part 0",
+        "description": "Run ResNet/ViT feature extractor for part 0",
+        "processing_time": 415,
+        "requires": {
+          "CPU": 4,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "fuse_features_part_0",
+        "name": "Fuse Features Part 0",
+        "description": "Combine numeric, text, and image features for part 0",
+        "processing_time": 81,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_0_fold_0",
+        "name": "Train Model Part 0 Fold 0",
+        "description": "Train GBDT or deep neural net on fold 0 of part 0",
+        "processing_time": 546,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_0_fold_0",
+        "name": "Evaluate Model Part 0 Fold 0",
+        "description": "Validate model predictions on validation fold 0 of part 0",
+        "processing_time": 110,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_0_fold_1",
+        "name": "Train Model Part 0 Fold 1",
+        "description": "Train GBDT or deep neural net on fold 1 of part 0",
+        "processing_time": 358,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_0_fold_1",
+        "name": "Evaluate Model Part 0 Fold 1",
+        "description": "Validate model predictions on validation fold 1 of part 0",
+        "processing_time": 138,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_0_fold_2",
+        "name": "Train Model Part 0 Fold 2",
+        "description": "Train GBDT or deep neural net on fold 2 of part 0",
+        "processing_time": 586,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_0_fold_2",
+        "name": "Evaluate Model Part 0 Fold 2",
+        "description": "Validate model predictions on validation fold 2 of part 0",
+        "processing_time": 150,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_0_fold_3",
+        "name": "Train Model Part 0 Fold 3",
+        "description": "Train GBDT or deep neural net on fold 3 of part 0",
+        "processing_time": 325,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_0_fold_3",
+        "name": "Evaluate Model Part 0 Fold 3",
+        "description": "Validate model predictions on validation fold 3 of part 0",
+        "processing_time": 226,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_0_fold_4",
+        "name": "Train Model Part 0 Fold 4",
+        "description": "Train GBDT or deep neural net on fold 4 of part 0",
+        "processing_time": 536,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_0_fold_4",
+        "name": "Evaluate Model Part 0 Fold 4",
+        "description": "Validate model predictions on validation fold 4 of part 0",
+        "processing_time": 230,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "load_data_part_1",
+        "name": "Load Data Part 1",
+        "description": "Load subset of input raw data for part 1",
+        "processing_time": 70,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "clean_data_part_1",
+        "name": "Clean Data Part 1",
+        "description": "Standardize columns and clean values for part 1",
+        "processing_time": 102,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "impute_data_part_1",
+        "name": "Impute Missing Part 1",
+        "description": "Impute missing features for part 1",
+        "processing_time": 98,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_numeric_part_1",
+        "name": "Extract Numeric Features Part 1",
+        "description": "Scale and extract statistical features for part 1",
+        "processing_time": 179,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_text_part_1",
+        "name": "Extract Text Features Part 1",
+        "description": "Apply TF-IDF / SVD to text fields for part 1",
+        "processing_time": 338,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_image_part_1",
+        "name": "Extract Image Features Part 1",
+        "description": "Run ResNet/ViT feature extractor for part 1",
+        "processing_time": 420,
+        "requires": {
+          "CPU": 4,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "fuse_features_part_1",
+        "name": "Fuse Features Part 1",
+        "description": "Combine numeric, text, and image features for part 1",
+        "processing_time": 110,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_1_fold_0",
+        "name": "Train Model Part 1 Fold 0",
+        "description": "Train GBDT or deep neural net on fold 0 of part 1",
+        "processing_time": 800,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_1_fold_0",
+        "name": "Evaluate Model Part 1 Fold 0",
+        "description": "Validate model predictions on validation fold 0 of part 1",
+        "processing_time": 197,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_1_fold_1",
+        "name": "Train Model Part 1 Fold 1",
+        "description": "Train GBDT or deep neural net on fold 1 of part 1",
+        "processing_time": 548,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_1_fold_1",
+        "name": "Evaluate Model Part 1 Fold 1",
+        "description": "Validate model predictions on validation fold 1 of part 1",
+        "processing_time": 160,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_1_fold_2",
+        "name": "Train Model Part 1 Fold 2",
+        "description": "Train GBDT or deep neural net on fold 2 of part 1",
+        "processing_time": 614,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_1_fold_2",
+        "name": "Evaluate Model Part 1 Fold 2",
+        "description": "Validate model predictions on validation fold 2 of part 1",
+        "processing_time": 239,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_1_fold_3",
+        "name": "Train Model Part 1 Fold 3",
+        "description": "Train GBDT or deep neural net on fold 3 of part 1",
+        "processing_time": 419,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_1_fold_3",
+        "name": "Evaluate Model Part 1 Fold 3",
+        "description": "Validate model predictions on validation fold 3 of part 1",
+        "processing_time": 216,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_1_fold_4",
+        "name": "Train Model Part 1 Fold 4",
+        "description": "Train GBDT or deep neural net on fold 4 of part 1",
+        "processing_time": 458,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_1_fold_4",
+        "name": "Evaluate Model Part 1 Fold 4",
+        "description": "Validate model predictions on validation fold 4 of part 1",
+        "processing_time": 219,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "load_data_part_2",
+        "name": "Load Data Part 2",
+        "description": "Load subset of input raw data for part 2",
+        "processing_time": 75,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "clean_data_part_2",
+        "name": "Clean Data Part 2",
+        "description": "Standardize columns and clean values for part 2",
+        "processing_time": 104,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "impute_data_part_2",
+        "name": "Impute Missing Part 2",
+        "description": "Impute missing features for part 2",
+        "processing_time": 95,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_numeric_part_2",
+        "name": "Extract Numeric Features Part 2",
+        "description": "Scale and extract statistical features for part 2",
+        "processing_time": 140,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_text_part_2",
+        "name": "Extract Text Features Part 2",
+        "description": "Apply TF-IDF / SVD to text fields for part 2",
+        "processing_time": 272,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_image_part_2",
+        "name": "Extract Image Features Part 2",
+        "description": "Run ResNet/ViT feature extractor for part 2",
+        "processing_time": 477,
+        "requires": {
+          "CPU": 4,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "fuse_features_part_2",
+        "name": "Fuse Features Part 2",
+        "description": "Combine numeric, text, and image features for part 2",
+        "processing_time": 158,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_2_fold_0",
+        "name": "Train Model Part 2 Fold 0",
+        "description": "Train GBDT or deep neural net on fold 0 of part 2",
+        "processing_time": 769,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_2_fold_0",
+        "name": "Evaluate Model Part 2 Fold 0",
+        "description": "Validate model predictions on validation fold 0 of part 2",
+        "processing_time": 210,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_2_fold_1",
+        "name": "Train Model Part 2 Fold 1",
+        "description": "Train GBDT or deep neural net on fold 1 of part 2",
+        "processing_time": 401,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_2_fold_1",
+        "name": "Evaluate Model Part 2 Fold 1",
+        "description": "Validate model predictions on validation fold 1 of part 2",
+        "processing_time": 184,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_2_fold_2",
+        "name": "Train Model Part 2 Fold 2",
+        "description": "Train GBDT or deep neural net on fold 2 of part 2",
+        "processing_time": 717,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_2_fold_2",
+        "name": "Evaluate Model Part 2 Fold 2",
+        "description": "Validate model predictions on validation fold 2 of part 2",
+        "processing_time": 138,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_2_fold_3",
+        "name": "Train Model Part 2 Fold 3",
+        "description": "Train GBDT or deep neural net on fold 3 of part 2",
+        "processing_time": 323,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_2_fold_3",
+        "name": "Evaluate Model Part 2 Fold 3",
+        "description": "Validate model predictions on validation fold 3 of part 2",
+        "processing_time": 228,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_2_fold_4",
+        "name": "Train Model Part 2 Fold 4",
+        "description": "Train GBDT or deep neural net on fold 4 of part 2",
+        "processing_time": 490,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_2_fold_4",
+        "name": "Evaluate Model Part 2 Fold 4",
+        "description": "Validate model predictions on validation fold 4 of part 2",
+        "processing_time": 248,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "ensemble_predictions",
+        "name": "Ensemble Predictions",
+        "description": "Perform final soft-voting ensemble across all folds and parts",
+        "processing_time": 271,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      }
+    ],
+    "dag_edges": [
+      {
+        "from": "load_data_part_0",
+        "to": "clean_data_part_0",
+        "data": [
+          "raw_data_part_0"
+        ]
+      },
+      {
+        "from": "clean_data_part_0",
+        "to": "impute_data_part_0",
+        "data": [
+          "cleaned_data_part_0"
+        ]
+      },
+      {
+        "from": "impute_data_part_0",
+        "to": "extract_numeric_part_0",
+        "data": [
+          "imputed_data_part_0"
+        ]
+      },
+      {
+        "from": "impute_data_part_0",
+        "to": "extract_text_part_0",
+        "data": [
+          "imputed_data_part_0"
+        ]
+      },
+      {
+        "from": "impute_data_part_0",
+        "to": "extract_image_part_0",
+        "data": [
+          "imputed_data_part_0"
+        ]
+      },
+      {
+        "from": "extract_numeric_part_0",
+        "to": "fuse_features_part_0",
+        "data": [
+          "numeric_features_part_0"
+        ]
+      },
+      {
+        "from": "extract_text_part_0",
+        "to": "fuse_features_part_0",
+        "data": [
+          "text_features_part_0"
+        ]
+      },
+      {
+        "from": "extract_image_part_0",
+        "to": "fuse_features_part_0",
+        "data": [
+          "image_features_part_0"
+        ]
+      },
+      {
+        "from": "fuse_features_part_0",
+        "to": "train_model_part_0_fold_0",
+        "data": [
+          "fused_features_part_0"
+        ]
+      },
+      {
+        "from": "train_model_part_0_fold_0",
+        "to": "evaluate_model_part_0_fold_0",
+        "data": [
+          "model_part_0_fold_0"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_0_fold_0",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_0_fold_0"
+        ]
+      },
+      {
+        "from": "fuse_features_part_0",
+        "to": "train_model_part_0_fold_1",
+        "data": [
+          "fused_features_part_0"
+        ]
+      },
+      {
+        "from": "train_model_part_0_fold_1",
+        "to": "evaluate_model_part_0_fold_1",
+        "data": [
+          "model_part_0_fold_1"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_0_fold_1",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_0_fold_1"
+        ]
+      },
+      {
+        "from": "fuse_features_part_0",
+        "to": "train_model_part_0_fold_2",
+        "data": [
+          "fused_features_part_0"
+        ]
+      },
+      {
+        "from": "train_model_part_0_fold_2",
+        "to": "evaluate_model_part_0_fold_2",
+        "data": [
+          "model_part_0_fold_2"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_0_fold_2",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_0_fold_2"
+        ]
+      },
+      {
+        "from": "fuse_features_part_0",
+        "to": "train_model_part_0_fold_3",
+        "data": [
+          "fused_features_part_0"
+        ]
+      },
+      {
+        "from": "train_model_part_0_fold_3",
+        "to": "evaluate_model_part_0_fold_3",
+        "data": [
+          "model_part_0_fold_3"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_0_fold_3",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_0_fold_3"
+        ]
+      },
+      {
+        "from": "fuse_features_part_0",
+        "to": "train_model_part_0_fold_4",
+        "data": [
+          "fused_features_part_0"
+        ]
+      },
+      {
+        "from": "train_model_part_0_fold_4",
+        "to": "evaluate_model_part_0_fold_4",
+        "data": [
+          "model_part_0_fold_4"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_0_fold_4",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_0_fold_4"
+        ]
+      },
+      {
+        "from": "load_data_part_1",
+        "to": "clean_data_part_1",
+        "data": [
+          "raw_data_part_1"
+        ]
+      },
+      {
+        "from": "clean_data_part_1",
+        "to": "impute_data_part_1",
+        "data": [
+          "cleaned_data_part_1"
+        ]
+      },
+      {
+        "from": "impute_data_part_1",
+        "to": "extract_numeric_part_1",
+        "data": [
+          "imputed_data_part_1"
+        ]
+      },
+      {
+        "from": "impute_data_part_1",
+        "to": "extract_text_part_1",
+        "data": [
+          "imputed_data_part_1"
+        ]
+      },
+      {
+        "from": "impute_data_part_1",
+        "to": "extract_image_part_1",
+        "data": [
+          "imputed_data_part_1"
+        ]
+      },
+      {
+        "from": "extract_numeric_part_1",
+        "to": "fuse_features_part_1",
+        "data": [
+          "numeric_features_part_1"
+        ]
+      },
+      {
+        "from": "extract_text_part_1",
+        "to": "fuse_features_part_1",
+        "data": [
+          "text_features_part_1"
+        ]
+      },
+      {
+        "from": "extract_image_part_1",
+        "to": "fuse_features_part_1",
+        "data": [
+          "image_features_part_1"
+        ]
+      },
+      {
+        "from": "fuse_features_part_1",
+        "to": "train_model_part_1_fold_0",
+        "data": [
+          "fused_features_part_1"
+        ]
+      },
+      {
+        "from": "train_model_part_1_fold_0",
+        "to": "evaluate_model_part_1_fold_0",
+        "data": [
+          "model_part_1_fold_0"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_1_fold_0",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_1_fold_0"
+        ]
+      },
+      {
+        "from": "fuse_features_part_1",
+        "to": "train_model_part_1_fold_1",
+        "data": [
+          "fused_features_part_1"
+        ]
+      },
+      {
+        "from": "train_model_part_1_fold_1",
+        "to": "evaluate_model_part_1_fold_1",
+        "data": [
+          "model_part_1_fold_1"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_1_fold_1",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_1_fold_1"
+        ]
+      },
+      {
+        "from": "fuse_features_part_1",
+        "to": "train_model_part_1_fold_2",
+        "data": [
+          "fused_features_part_1"
+        ]
+      },
+      {
+        "from": "train_model_part_1_fold_2",
+        "to": "evaluate_model_part_1_fold_2",
+        "data": [
+          "model_part_1_fold_2"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_1_fold_2",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_1_fold_2"
+        ]
+      },
+      {
+        "from": "fuse_features_part_1",
+        "to": "train_model_part_1_fold_3",
+        "data": [
+          "fused_features_part_1"
+        ]
+      },
+      {
+        "from": "train_model_part_1_fold_3",
+        "to": "evaluate_model_part_1_fold_3",
+        "data": [
+          "model_part_1_fold_3"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_1_fold_3",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_1_fold_3"
+        ]
+      },
+      {
+        "from": "fuse_features_part_1",
+        "to": "train_model_part_1_fold_4",
+        "data": [
+          "fused_features_part_1"
+        ]
+      },
+      {
+        "from": "train_model_part_1_fold_4",
+        "to": "evaluate_model_part_1_fold_4",
+        "data": [
+          "model_part_1_fold_4"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_1_fold_4",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_1_fold_4"
+        ]
+      },
+      {
+        "from": "load_data_part_2",
+        "to": "clean_data_part_2",
+        "data": [
+          "raw_data_part_2"
+        ]
+      },
+      {
+        "from": "clean_data_part_2",
+        "to": "impute_data_part_2",
+        "data": [
+          "cleaned_data_part_2"
+        ]
+      },
+      {
+        "from": "impute_data_part_2",
+        "to": "extract_numeric_part_2",
+        "data": [
+          "imputed_data_part_2"
+        ]
+      },
+      {
+        "from": "impute_data_part_2",
+        "to": "extract_text_part_2",
+        "data": [
+          "imputed_data_part_2"
+        ]
+      },
+      {
+        "from": "impute_data_part_2",
+        "to": "extract_image_part_2",
+        "data": [
+          "imputed_data_part_2"
+        ]
+      },
+      {
+        "from": "extract_numeric_part_2",
+        "to": "fuse_features_part_2",
+        "data": [
+          "numeric_features_part_2"
+        ]
+      },
+      {
+        "from": "extract_text_part_2",
+        "to": "fuse_features_part_2",
+        "data": [
+          "text_features_part_2"
+        ]
+      },
+      {
+        "from": "extract_image_part_2",
+        "to": "fuse_features_part_2",
+        "data": [
+          "image_features_part_2"
+        ]
+      },
+      {
+        "from": "fuse_features_part_2",
+        "to": "train_model_part_2_fold_0",
+        "data": [
+          "fused_features_part_2"
+        ]
+      },
+      {
+        "from": "train_model_part_2_fold_0",
+        "to": "evaluate_model_part_2_fold_0",
+        "data": [
+          "model_part_2_fold_0"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_2_fold_0",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_2_fold_0"
+        ]
+      },
+      {
+        "from": "fuse_features_part_2",
+        "to": "train_model_part_2_fold_1",
+        "data": [
+          "fused_features_part_2"
+        ]
+      },
+      {
+        "from": "train_model_part_2_fold_1",
+        "to": "evaluate_model_part_2_fold_1",
+        "data": [
+          "model_part_2_fold_1"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_2_fold_1",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_2_fold_1"
+        ]
+      },
+      {
+        "from": "fuse_features_part_2",
+        "to": "train_model_part_2_fold_2",
+        "data": [
+          "fused_features_part_2"
+        ]
+      },
+      {
+        "from": "train_model_part_2_fold_2",
+        "to": "evaluate_model_part_2_fold_2",
+        "data": [
+          "model_part_2_fold_2"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_2_fold_2",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_2_fold_2"
+        ]
+      },
+      {
+        "from": "fuse_features_part_2",
+        "to": "train_model_part_2_fold_3",
+        "data": [
+          "fused_features_part_2"
+        ]
+      },
+      {
+        "from": "train_model_part_2_fold_3",
+        "to": "evaluate_model_part_2_fold_3",
+        "data": [
+          "model_part_2_fold_3"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_2_fold_3",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_2_fold_3"
+        ]
+      },
+      {
+        "from": "fuse_features_part_2",
+        "to": "train_model_part_2_fold_4",
+        "data": [
+          "fused_features_part_2"
+        ]
+      },
+      {
+        "from": "train_model_part_2_fold_4",
+        "to": "evaluate_model_part_2_fold_4",
+        "data": [
+          "model_part_2_fold_4"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_2_fold_4",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_2_fold_4"
+        ]
+      }
+    ],
+    "workers": [
+      "laptop",
+      "workstation",
+      "cloud_cpu",
+      "cloud_gpu_1",
+      "cloud_gpu_2"
+    ]
+  },
+  {
+    "task_id": "syn_ml-pipeline-069",
+    "task_description": "A synthetic scalable machine learning pipeline with 4 parts and 5 folds to test larger schedules.",
+    "dag_nodes": [
+      {
+        "id": "load_data_part_0",
+        "name": "Load Data Part 0",
+        "description": "Load subset of input raw data for part 0",
+        "processing_time": 78,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "clean_data_part_0",
+        "name": "Clean Data Part 0",
+        "description": "Standardize columns and clean values for part 0",
+        "processing_time": 60,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "impute_data_part_0",
+        "name": "Impute Missing Part 0",
+        "description": "Impute missing features for part 0",
+        "processing_time": 120,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_numeric_part_0",
+        "name": "Extract Numeric Features Part 0",
+        "description": "Scale and extract statistical features for part 0",
+        "processing_time": 152,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_text_part_0",
+        "name": "Extract Text Features Part 0",
+        "description": "Apply TF-IDF / SVD to text fields for part 0",
+        "processing_time": 296,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_image_part_0",
+        "name": "Extract Image Features Part 0",
+        "description": "Run ResNet/ViT feature extractor for part 0",
+        "processing_time": 353,
+        "requires": {
+          "CPU": 4,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "fuse_features_part_0",
+        "name": "Fuse Features Part 0",
+        "description": "Combine numeric, text, and image features for part 0",
+        "processing_time": 81,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_0_fold_0",
+        "name": "Train Model Part 0 Fold 0",
+        "description": "Train GBDT or deep neural net on fold 0 of part 0",
+        "processing_time": 583,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_0_fold_0",
+        "name": "Evaluate Model Part 0 Fold 0",
+        "description": "Validate model predictions on validation fold 0 of part 0",
+        "processing_time": 220,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_0_fold_1",
+        "name": "Train Model Part 0 Fold 1",
+        "description": "Train GBDT or deep neural net on fold 1 of part 0",
+        "processing_time": 540,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_0_fold_1",
+        "name": "Evaluate Model Part 0 Fold 1",
+        "description": "Validate model predictions on validation fold 1 of part 0",
+        "processing_time": 235,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_0_fold_2",
+        "name": "Train Model Part 0 Fold 2",
+        "description": "Train GBDT or deep neural net on fold 2 of part 0",
+        "processing_time": 727,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_0_fold_2",
+        "name": "Evaluate Model Part 0 Fold 2",
+        "description": "Validate model predictions on validation fold 2 of part 0",
+        "processing_time": 122,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_0_fold_3",
+        "name": "Train Model Part 0 Fold 3",
+        "description": "Train GBDT or deep neural net on fold 3 of part 0",
+        "processing_time": 481,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_0_fold_3",
+        "name": "Evaluate Model Part 0 Fold 3",
+        "description": "Validate model predictions on validation fold 3 of part 0",
+        "processing_time": 214,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_0_fold_4",
+        "name": "Train Model Part 0 Fold 4",
+        "description": "Train GBDT or deep neural net on fold 4 of part 0",
+        "processing_time": 407,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_0_fold_4",
+        "name": "Evaluate Model Part 0 Fold 4",
+        "description": "Validate model predictions on validation fold 4 of part 0",
+        "processing_time": 224,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "load_data_part_1",
+        "name": "Load Data Part 1",
+        "description": "Load subset of input raw data for part 1",
+        "processing_time": 93,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "clean_data_part_1",
+        "name": "Clean Data Part 1",
+        "description": "Standardize columns and clean values for part 1",
+        "processing_time": 73,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "impute_data_part_1",
+        "name": "Impute Missing Part 1",
+        "description": "Impute missing features for part 1",
+        "processing_time": 67,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_numeric_part_1",
+        "name": "Extract Numeric Features Part 1",
+        "description": "Scale and extract statistical features for part 1",
+        "processing_time": 130,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_text_part_1",
+        "name": "Extract Text Features Part 1",
+        "description": "Apply TF-IDF / SVD to text fields for part 1",
+        "processing_time": 259,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_image_part_1",
+        "name": "Extract Image Features Part 1",
+        "description": "Run ResNet/ViT feature extractor for part 1",
+        "processing_time": 387,
+        "requires": {
+          "CPU": 4,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "fuse_features_part_1",
+        "name": "Fuse Features Part 1",
+        "description": "Combine numeric, text, and image features for part 1",
+        "processing_time": 120,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_1_fold_0",
+        "name": "Train Model Part 1 Fold 0",
+        "description": "Train GBDT or deep neural net on fold 0 of part 1",
+        "processing_time": 777,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_1_fold_0",
+        "name": "Evaluate Model Part 1 Fold 0",
+        "description": "Validate model predictions on validation fold 0 of part 1",
+        "processing_time": 193,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_1_fold_1",
+        "name": "Train Model Part 1 Fold 1",
+        "description": "Train GBDT or deep neural net on fold 1 of part 1",
+        "processing_time": 334,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_1_fold_1",
+        "name": "Evaluate Model Part 1 Fold 1",
+        "description": "Validate model predictions on validation fold 1 of part 1",
+        "processing_time": 190,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_1_fold_2",
+        "name": "Train Model Part 1 Fold 2",
+        "description": "Train GBDT or deep neural net on fold 2 of part 1",
+        "processing_time": 523,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_1_fold_2",
+        "name": "Evaluate Model Part 1 Fold 2",
+        "description": "Validate model predictions on validation fold 2 of part 1",
+        "processing_time": 124,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_1_fold_3",
+        "name": "Train Model Part 1 Fold 3",
+        "description": "Train GBDT or deep neural net on fold 3 of part 1",
+        "processing_time": 766,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_1_fold_3",
+        "name": "Evaluate Model Part 1 Fold 3",
+        "description": "Validate model predictions on validation fold 3 of part 1",
+        "processing_time": 245,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_1_fold_4",
+        "name": "Train Model Part 1 Fold 4",
+        "description": "Train GBDT or deep neural net on fold 4 of part 1",
+        "processing_time": 606,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_1_fold_4",
+        "name": "Evaluate Model Part 1 Fold 4",
+        "description": "Validate model predictions on validation fold 4 of part 1",
+        "processing_time": 141,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "load_data_part_2",
+        "name": "Load Data Part 2",
+        "description": "Load subset of input raw data for part 2",
+        "processing_time": 83,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "clean_data_part_2",
+        "name": "Clean Data Part 2",
+        "description": "Standardize columns and clean values for part 2",
+        "processing_time": 61,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "impute_data_part_2",
+        "name": "Impute Missing Part 2",
+        "description": "Impute missing features for part 2",
+        "processing_time": 120,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_numeric_part_2",
+        "name": "Extract Numeric Features Part 2",
+        "description": "Scale and extract statistical features for part 2",
+        "processing_time": 93,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_text_part_2",
+        "name": "Extract Text Features Part 2",
+        "description": "Apply TF-IDF / SVD to text fields for part 2",
+        "processing_time": 256,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_image_part_2",
+        "name": "Extract Image Features Part 2",
+        "description": "Run ResNet/ViT feature extractor for part 2",
+        "processing_time": 256,
+        "requires": {
+          "CPU": 4,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "fuse_features_part_2",
+        "name": "Fuse Features Part 2",
+        "description": "Combine numeric, text, and image features for part 2",
+        "processing_time": 128,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_2_fold_0",
+        "name": "Train Model Part 2 Fold 0",
+        "description": "Train GBDT or deep neural net on fold 0 of part 2",
+        "processing_time": 717,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_2_fold_0",
+        "name": "Evaluate Model Part 2 Fold 0",
+        "description": "Validate model predictions on validation fold 0 of part 2",
+        "processing_time": 211,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_2_fold_1",
+        "name": "Train Model Part 2 Fold 1",
+        "description": "Train GBDT or deep neural net on fold 1 of part 2",
+        "processing_time": 594,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_2_fold_1",
+        "name": "Evaluate Model Part 2 Fold 1",
+        "description": "Validate model predictions on validation fold 1 of part 2",
+        "processing_time": 149,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_2_fold_2",
+        "name": "Train Model Part 2 Fold 2",
+        "description": "Train GBDT or deep neural net on fold 2 of part 2",
+        "processing_time": 571,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_2_fold_2",
+        "name": "Evaluate Model Part 2 Fold 2",
+        "description": "Validate model predictions on validation fold 2 of part 2",
+        "processing_time": 149,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_2_fold_3",
+        "name": "Train Model Part 2 Fold 3",
+        "description": "Train GBDT or deep neural net on fold 3 of part 2",
+        "processing_time": 675,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_2_fold_3",
+        "name": "Evaluate Model Part 2 Fold 3",
+        "description": "Validate model predictions on validation fold 3 of part 2",
+        "processing_time": 233,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_2_fold_4",
+        "name": "Train Model Part 2 Fold 4",
+        "description": "Train GBDT or deep neural net on fold 4 of part 2",
+        "processing_time": 555,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_2_fold_4",
+        "name": "Evaluate Model Part 2 Fold 4",
+        "description": "Validate model predictions on validation fold 4 of part 2",
+        "processing_time": 231,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "load_data_part_3",
+        "name": "Load Data Part 3",
+        "description": "Load subset of input raw data for part 3",
+        "processing_time": 97,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "clean_data_part_3",
+        "name": "Clean Data Part 3",
+        "description": "Standardize columns and clean values for part 3",
+        "processing_time": 87,
+        "requires": {
+          "CPU": 1,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "impute_data_part_3",
+        "name": "Impute Missing Part 3",
+        "description": "Impute missing features for part 3",
+        "processing_time": 86,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_numeric_part_3",
+        "name": "Extract Numeric Features Part 3",
+        "description": "Scale and extract statistical features for part 3",
+        "processing_time": 140,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_text_part_3",
+        "name": "Extract Text Features Part 3",
+        "description": "Apply TF-IDF / SVD to text fields for part 3",
+        "processing_time": 154,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "extract_image_part_3",
+        "name": "Extract Image Features Part 3",
+        "description": "Run ResNet/ViT feature extractor for part 3",
+        "processing_time": 389,
+        "requires": {
+          "CPU": 4,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "fuse_features_part_3",
+        "name": "Fuse Features Part 3",
+        "description": "Combine numeric, text, and image features for part 3",
+        "processing_time": 101,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_3_fold_0",
+        "name": "Train Model Part 3 Fold 0",
+        "description": "Train GBDT or deep neural net on fold 0 of part 3",
+        "processing_time": 489,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_3_fold_0",
+        "name": "Evaluate Model Part 3 Fold 0",
+        "description": "Validate model predictions on validation fold 0 of part 3",
+        "processing_time": 139,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_3_fold_1",
+        "name": "Train Model Part 3 Fold 1",
+        "description": "Train GBDT or deep neural net on fold 1 of part 3",
+        "processing_time": 365,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_3_fold_1",
+        "name": "Evaluate Model Part 3 Fold 1",
+        "description": "Validate model predictions on validation fold 1 of part 3",
+        "processing_time": 200,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_3_fold_2",
+        "name": "Train Model Part 3 Fold 2",
+        "description": "Train GBDT or deep neural net on fold 2 of part 3",
+        "processing_time": 687,
+        "requires": {
+          "CPU": 8,
+          "GPU": 1
+        },
+        "compatible_workers": [
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_3_fold_2",
+        "name": "Evaluate Model Part 3 Fold 2",
+        "description": "Validate model predictions on validation fold 2 of part 3",
+        "processing_time": 153,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_3_fold_3",
+        "name": "Train Model Part 3 Fold 3",
+        "description": "Train GBDT or deep neural net on fold 3 of part 3",
+        "processing_time": 443,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_3_fold_3",
+        "name": "Evaluate Model Part 3 Fold 3",
+        "description": "Validate model predictions on validation fold 3 of part 3",
+        "processing_time": 228,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "train_model_part_3_fold_4",
+        "name": "Train Model Part 3 Fold 4",
+        "description": "Train GBDT or deep neural net on fold 4 of part 3",
+        "processing_time": 359,
+        "requires": {
+          "CPU": 8,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "evaluate_model_part_3_fold_4",
+        "name": "Evaluate Model Part 3 Fold 4",
+        "description": "Validate model predictions on validation fold 4 of part 3",
+        "processing_time": 211,
+        "requires": {
+          "CPU": 2,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "laptop",
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      },
+      {
+        "id": "ensemble_predictions",
+        "name": "Ensemble Predictions",
+        "description": "Perform final soft-voting ensemble across all folds and parts",
+        "processing_time": 270,
+        "requires": {
+          "CPU": 4,
+          "GPU": 0
+        },
+        "compatible_workers": [
+          "workstation",
+          "cloud_cpu",
+          "cloud_gpu_1",
+          "cloud_gpu_2"
+        ]
+      }
+    ],
+    "dag_edges": [
+      {
+        "from": "load_data_part_0",
+        "to": "clean_data_part_0",
+        "data": [
+          "raw_data_part_0"
+        ]
+      },
+      {
+        "from": "clean_data_part_0",
+        "to": "impute_data_part_0",
+        "data": [
+          "cleaned_data_part_0"
+        ]
+      },
+      {
+        "from": "impute_data_part_0",
+        "to": "extract_numeric_part_0",
+        "data": [
+          "imputed_data_part_0"
+        ]
+      },
+      {
+        "from": "impute_data_part_0",
+        "to": "extract_text_part_0",
+        "data": [
+          "imputed_data_part_0"
+        ]
+      },
+      {
+        "from": "impute_data_part_0",
+        "to": "extract_image_part_0",
+        "data": [
+          "imputed_data_part_0"
+        ]
+      },
+      {
+        "from": "extract_numeric_part_0",
+        "to": "fuse_features_part_0",
+        "data": [
+          "numeric_features_part_0"
+        ]
+      },
+      {
+        "from": "extract_text_part_0",
+        "to": "fuse_features_part_0",
+        "data": [
+          "text_features_part_0"
+        ]
+      },
+      {
+        "from": "extract_image_part_0",
+        "to": "fuse_features_part_0",
+        "data": [
+          "image_features_part_0"
+        ]
+      },
+      {
+        "from": "fuse_features_part_0",
+        "to": "train_model_part_0_fold_0",
+        "data": [
+          "fused_features_part_0"
+        ]
+      },
+      {
+        "from": "train_model_part_0_fold_0",
+        "to": "evaluate_model_part_0_fold_0",
+        "data": [
+          "model_part_0_fold_0"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_0_fold_0",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_0_fold_0"
+        ]
+      },
+      {
+        "from": "fuse_features_part_0",
+        "to": "train_model_part_0_fold_1",
+        "data": [
+          "fused_features_part_0"
+        ]
+      },
+      {
+        "from": "train_model_part_0_fold_1",
+        "to": "evaluate_model_part_0_fold_1",
+        "data": [
+          "model_part_0_fold_1"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_0_fold_1",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_0_fold_1"
+        ]
+      },
+      {
+        "from": "fuse_features_part_0",
+        "to": "train_model_part_0_fold_2",
+        "data": [
+          "fused_features_part_0"
+        ]
+      },
+      {
+        "from": "train_model_part_0_fold_2",
+        "to": "evaluate_model_part_0_fold_2",
+        "data": [
+          "model_part_0_fold_2"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_0_fold_2",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_0_fold_2"
+        ]
+      },
+      {
+        "from": "fuse_features_part_0",
+        "to": "train_model_part_0_fold_3",
+        "data": [
+          "fused_features_part_0"
+        ]
+      },
+      {
+        "from": "train_model_part_0_fold_3",
+        "to": "evaluate_model_part_0_fold_3",
+        "data": [
+          "model_part_0_fold_3"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_0_fold_3",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_0_fold_3"
+        ]
+      },
+      {
+        "from": "fuse_features_part_0",
+        "to": "train_model_part_0_fold_4",
+        "data": [
+          "fused_features_part_0"
+        ]
+      },
+      {
+        "from": "train_model_part_0_fold_4",
+        "to": "evaluate_model_part_0_fold_4",
+        "data": [
+          "model_part_0_fold_4"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_0_fold_4",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_0_fold_4"
+        ]
+      },
+      {
+        "from": "load_data_part_1",
+        "to": "clean_data_part_1",
+        "data": [
+          "raw_data_part_1"
+        ]
+      },
+      {
+        "from": "clean_data_part_1",
+        "to": "impute_data_part_1",
+        "data": [
+          "cleaned_data_part_1"
+        ]
+      },
+      {
+        "from": "impute_data_part_1",
+        "to": "extract_numeric_part_1",
+        "data": [
+          "imputed_data_part_1"
+        ]
+      },
+      {
+        "from": "impute_data_part_1",
+        "to": "extract_text_part_1",
+        "data": [
+          "imputed_data_part_1"
+        ]
+      },
+      {
+        "from": "impute_data_part_1",
+        "to": "extract_image_part_1",
+        "data": [
+          "imputed_data_part_1"
+        ]
+      },
+      {
+        "from": "extract_numeric_part_1",
+        "to": "fuse_features_part_1",
+        "data": [
+          "numeric_features_part_1"
+        ]
+      },
+      {
+        "from": "extract_text_part_1",
+        "to": "fuse_features_part_1",
+        "data": [
+          "text_features_part_1"
+        ]
+      },
+      {
+        "from": "extract_image_part_1",
+        "to": "fuse_features_part_1",
+        "data": [
+          "image_features_part_1"
+        ]
+      },
+      {
+        "from": "fuse_features_part_1",
+        "to": "train_model_part_1_fold_0",
+        "data": [
+          "fused_features_part_1"
+        ]
+      },
+      {
+        "from": "train_model_part_1_fold_0",
+        "to": "evaluate_model_part_1_fold_0",
+        "data": [
+          "model_part_1_fold_0"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_1_fold_0",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_1_fold_0"
+        ]
+      },
+      {
+        "from": "fuse_features_part_1",
+        "to": "train_model_part_1_fold_1",
+        "data": [
+          "fused_features_part_1"
+        ]
+      },
+      {
+        "from": "train_model_part_1_fold_1",
+        "to": "evaluate_model_part_1_fold_1",
+        "data": [
+          "model_part_1_fold_1"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_1_fold_1",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_1_fold_1"
+        ]
+      },
+      {
+        "from": "fuse_features_part_1",
+        "to": "train_model_part_1_fold_2",
+        "data": [
+          "fused_features_part_1"
+        ]
+      },
+      {
+        "from": "train_model_part_1_fold_2",
+        "to": "evaluate_model_part_1_fold_2",
+        "data": [
+          "model_part_1_fold_2"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_1_fold_2",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_1_fold_2"
+        ]
+      },
+      {
+        "from": "fuse_features_part_1",
+        "to": "train_model_part_1_fold_3",
+        "data": [
+          "fused_features_part_1"
+        ]
+      },
+      {
+        "from": "train_model_part_1_fold_3",
+        "to": "evaluate_model_part_1_fold_3",
+        "data": [
+          "model_part_1_fold_3"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_1_fold_3",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_1_fold_3"
+        ]
+      },
+      {
+        "from": "fuse_features_part_1",
+        "to": "train_model_part_1_fold_4",
+        "data": [
+          "fused_features_part_1"
+        ]
+      },
+      {
+        "from": "train_model_part_1_fold_4",
+        "to": "evaluate_model_part_1_fold_4",
+        "data": [
+          "model_part_1_fold_4"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_1_fold_4",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_1_fold_4"
+        ]
+      },
+      {
+        "from": "load_data_part_2",
+        "to": "clean_data_part_2",
+        "data": [
+          "raw_data_part_2"
+        ]
+      },
+      {
+        "from": "clean_data_part_2",
+        "to": "impute_data_part_2",
+        "data": [
+          "cleaned_data_part_2"
+        ]
+      },
+      {
+        "from": "impute_data_part_2",
+        "to": "extract_numeric_part_2",
+        "data": [
+          "imputed_data_part_2"
+        ]
+      },
+      {
+        "from": "impute_data_part_2",
+        "to": "extract_text_part_2",
+        "data": [
+          "imputed_data_part_2"
+        ]
+      },
+      {
+        "from": "impute_data_part_2",
+        "to": "extract_image_part_2",
+        "data": [
+          "imputed_data_part_2"
+        ]
+      },
+      {
+        "from": "extract_numeric_part_2",
+        "to": "fuse_features_part_2",
+        "data": [
+          "numeric_features_part_2"
+        ]
+      },
+      {
+        "from": "extract_text_part_2",
+        "to": "fuse_features_part_2",
+        "data": [
+          "text_features_part_2"
+        ]
+      },
+      {
+        "from": "extract_image_part_2",
+        "to": "fuse_features_part_2",
+        "data": [
+          "image_features_part_2"
+        ]
+      },
+      {
+        "from": "fuse_features_part_2",
+        "to": "train_model_part_2_fold_0",
+        "data": [
+          "fused_features_part_2"
+        ]
+      },
+      {
+        "from": "train_model_part_2_fold_0",
+        "to": "evaluate_model_part_2_fold_0",
+        "data": [
+          "model_part_2_fold_0"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_2_fold_0",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_2_fold_0"
+        ]
+      },
+      {
+        "from": "fuse_features_part_2",
+        "to": "train_model_part_2_fold_1",
+        "data": [
+          "fused_features_part_2"
+        ]
+      },
+      {
+        "from": "train_model_part_2_fold_1",
+        "to": "evaluate_model_part_2_fold_1",
+        "data": [
+          "model_part_2_fold_1"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_2_fold_1",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_2_fold_1"
+        ]
+      },
+      {
+        "from": "fuse_features_part_2",
+        "to": "train_model_part_2_fold_2",
+        "data": [
+          "fused_features_part_2"
+        ]
+      },
+      {
+        "from": "train_model_part_2_fold_2",
+        "to": "evaluate_model_part_2_fold_2",
+        "data": [
+          "model_part_2_fold_2"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_2_fold_2",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_2_fold_2"
+        ]
+      },
+      {
+        "from": "fuse_features_part_2",
+        "to": "train_model_part_2_fold_3",
+        "data": [
+          "fused_features_part_2"
+        ]
+      },
+      {
+        "from": "train_model_part_2_fold_3",
+        "to": "evaluate_model_part_2_fold_3",
+        "data": [
+          "model_part_2_fold_3"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_2_fold_3",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_2_fold_3"
+        ]
+      },
+      {
+        "from": "fuse_features_part_2",
+        "to": "train_model_part_2_fold_4",
+        "data": [
+          "fused_features_part_2"
+        ]
+      },
+      {
+        "from": "train_model_part_2_fold_4",
+        "to": "evaluate_model_part_2_fold_4",
+        "data": [
+          "model_part_2_fold_4"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_2_fold_4",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_2_fold_4"
+        ]
+      },
+      {
+        "from": "load_data_part_3",
+        "to": "clean_data_part_3",
+        "data": [
+          "raw_data_part_3"
+        ]
+      },
+      {
+        "from": "clean_data_part_3",
+        "to": "impute_data_part_3",
+        "data": [
+          "cleaned_data_part_3"
+        ]
+      },
+      {
+        "from": "impute_data_part_3",
+        "to": "extract_numeric_part_3",
+        "data": [
+          "imputed_data_part_3"
+        ]
+      },
+      {
+        "from": "impute_data_part_3",
+        "to": "extract_text_part_3",
+        "data": [
+          "imputed_data_part_3"
+        ]
+      },
+      {
+        "from": "impute_data_part_3",
+        "to": "extract_image_part_3",
+        "data": [
+          "imputed_data_part_3"
+        ]
+      },
+      {
+        "from": "extract_numeric_part_3",
+        "to": "fuse_features_part_3",
+        "data": [
+          "numeric_features_part_3"
+        ]
+      },
+      {
+        "from": "extract_text_part_3",
+        "to": "fuse_features_part_3",
+        "data": [
+          "text_features_part_3"
+        ]
+      },
+      {
+        "from": "extract_image_part_3",
+        "to": "fuse_features_part_3",
+        "data": [
+          "image_features_part_3"
+        ]
+      },
+      {
+        "from": "fuse_features_part_3",
+        "to": "train_model_part_3_fold_0",
+        "data": [
+          "fused_features_part_3"
+        ]
+      },
+      {
+        "from": "train_model_part_3_fold_0",
+        "to": "evaluate_model_part_3_fold_0",
+        "data": [
+          "model_part_3_fold_0"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_3_fold_0",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_3_fold_0"
+        ]
+      },
+      {
+        "from": "fuse_features_part_3",
+        "to": "train_model_part_3_fold_1",
+        "data": [
+          "fused_features_part_3"
+        ]
+      },
+      {
+        "from": "train_model_part_3_fold_1",
+        "to": "evaluate_model_part_3_fold_1",
+        "data": [
+          "model_part_3_fold_1"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_3_fold_1",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_3_fold_1"
+        ]
+      },
+      {
+        "from": "fuse_features_part_3",
+        "to": "train_model_part_3_fold_2",
+        "data": [
+          "fused_features_part_3"
+        ]
+      },
+      {
+        "from": "train_model_part_3_fold_2",
+        "to": "evaluate_model_part_3_fold_2",
+        "data": [
+          "model_part_3_fold_2"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_3_fold_2",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_3_fold_2"
+        ]
+      },
+      {
+        "from": "fuse_features_part_3",
+        "to": "train_model_part_3_fold_3",
+        "data": [
+          "fused_features_part_3"
+        ]
+      },
+      {
+        "from": "train_model_part_3_fold_3",
+        "to": "evaluate_model_part_3_fold_3",
+        "data": [
+          "model_part_3_fold_3"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_3_fold_3",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_3_fold_3"
+        ]
+      },
+      {
+        "from": "fuse_features_part_3",
+        "to": "train_model_part_3_fold_4",
+        "data": [
+          "fused_features_part_3"
+        ]
+      },
+      {
+        "from": "train_model_part_3_fold_4",
+        "to": "evaluate_model_part_3_fold_4",
+        "data": [
+          "model_part_3_fold_4"
+        ]
+      },
+      {
+        "from": "evaluate_model_part_3_fold_4",
+        "to": "ensemble_predictions",
+        "data": [
+          "predictions_part_3_fold_4"
+        ]
+      }
+    ],
+    "workers": [
+      "laptop",
+      "workstation",
+      "cloud_cpu",
+      "cloud_gpu_1",
+      "cloud_gpu_2"
+    ]
+  }
+]

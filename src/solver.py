@@ -12,6 +12,7 @@ from z3 import (
     Or,
     Sum,
     sat,
+    set_param,
 )
 
 from .dataset import Task, Worker
@@ -64,11 +65,13 @@ class Solver:
         """Solve a single Task and return the schedule, or None on failure."""
         start_time = time.perf_counter()
 
+        set_param("parallel.enable", True)
+        set_param("parallel.threads.max", 16)
         opt = Optimize()
         opt.set("timeout", self.timeout)
 
-        # Collect only the workers referenced by this task
-        task_worker_ids = [wid for wid in task.workers if wid in workers]
+        # Use all available loaded workers
+        task_worker_ids = list(workers.keys())
         num_workers = len(task_worker_ids)
 
         # Create set of worker variables
@@ -108,7 +111,9 @@ class Solver:
         for nid in node_ids:
             node = nodes[nid]
             compatible = [
-                wid for wid in task_worker_ids if wid in node.compatible_workers
+                wid for wid in task_worker_ids
+                if workers[wid].provides.get("CPU", 0) >= node.requires.get("CPU", 0)
+                and workers[wid].provides.get("GPU", 0) >= node.requires.get("GPU", 0)
             ]
 
             # Must be assigned to exactly one worker (at-least-one + at-most-one)
@@ -227,7 +232,9 @@ class Solver:
         schedule.sort(key=lambda x: (x["start"], x["end"]))
 
         duration = time.perf_counter() - start_time
-        print(f"[solver] Task '{task.task_id}': optimal makespan = {makespan_val} (solved in {duration:.4f}s)")
+        print(
+            f"[solver] Task '{task.task_id}': optimal makespan = {makespan_val} (solved in {duration:.4f}s)"
+        )
         self._print_schedule(task.task_id, schedule, makespan_val, lower_bound)
 
         return {
