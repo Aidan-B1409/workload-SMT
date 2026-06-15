@@ -1,0 +1,178 @@
+Loaded 5 workers and 5 workflow tasks.
+
+
+==========================================================================================
+[progress] Running workflow 1/5: syn_ml-pipeline-027 (27 nodes, 34 edges, 5 workers)
+==========================================================================================
+[solver] Solving task 'syn_ml-pipeline-027' (27 nodes, 34 edges, 5 workers, LB=1870, UB=7368) ...
+[solver] Task 'syn_ml-pipeline-027': optimal makespan = 2385 (solved in 0.6460s)
+
+  Schedule for task: syn_ml-pipeline-027  (makespan = 2385, lower bound = 1870)
+  ----------------------------------------------------------------------
+  Node                           Worker            Start    End Duration
+  ----------------------------------------------------------------------
+  Load Data Part 0               laptop                0     76       76
+  Load Data Part 1               laptop                0     83       83
+  Clean Data Part 0              laptop               76    143       67
+  Clean Data Part 1              cloud_gpu_1          83    195      112
+  Impute Missing Part 0          workstation         143    214       71
+  Impute Missing Part 1          workstation         195    263       68
+  Extract Numeric Features Part 0 laptop              214    394      180
+  Extract Text Features Part 0   cloud_gpu_2         214    427      213
+  Extract Image Features Part 0  cloud_gpu_2         214    567      353
+  Extract Image Features Part 1  cloud_gpu_1         263    591      328
+  Extract Text Features Part 1   cloud_cpu           372    591      219
+  Extract Numeric Features Part 1 cloud_gpu_1         454    591      137
+  Fuse Features Part 0           cloud_cpu           567    675      108
+  Fuse Features Part 1           workstation         591    744      153
+  Train Model Part 0 Fold 0      cloud_cpu           685   1345      660
+  Train Model Part 0 Fold 2      cloud_gpu_2         686   1273      587
+  Train Model Part 1 Fold 1      cloud_gpu_1         744   1472      728
+  Train Model Part 1 Fold 2      cloud_gpu_2        1273   2042      769
+  Train Model Part 1 Fold 0      workstation        1344   1889      545
+  Evaluate Model Part 0 Fold 2   cloud_cpu          1471   1664      193
+  Train Model Part 0 Fold 1      cloud_gpu_1        1472   2088      616
+  Evaluate Model Part 0 Fold 0   laptop             1888   2115      227
+  Evaluate Model Part 1 Fold 0   workstation        1889   2110      221
+  Evaluate Model Part 1 Fold 1   workstation        1890   2096      206
+  Evaluate Model Part 1 Fold 2   cloud_cpu          2042   2193      151
+  Evaluate Model Part 0 Fold 1   cloud_cpu          2088   2193      105
+  Ensemble Predictions           workstation        2193   2385      192
+  ----------------------------------------------------------------------
+
+[progress] Finished workflow 1/5: syn_ml-pipeline-027 in 0.65s
+
+==========================================================================================
+[progress] Running workflow 2/5: syn_ml-pipeline-035 (35 nodes, 46 edges, 5 workers)
+==========================================================================================
+[solver] Solving task 'syn_ml-pipeline-035' (35 nodes, 46 edges, 5 workers, LB=1922, UB=9391) ...
+[solver] Task 'syn_ml-pipeline-035': optimal makespan = 3148 (solved in 7.6084s)
+
+  Schedule for task: syn_ml-pipeline-035  (makespan = 3148, lower bound = 1922)
+  ----------------------------------------------------------------------
+  Node                           Worker            Start    End Duration
+  ----------------------------------------------------------------------
+  Load Data Part 0               cloud_gpu_2           0     83       83
+  Load Data Part 1               cloud_gpu_2           1     60       59
+  Clean Data Part 1              cloud_gpu_2          60    177      117
+  Clean Data Part 0              cloud_gpu_2          83    201      118
+  Impute Missing Part 1          laptop              177    249       72
+  Impute Missing Part 0          cloud_gpu_1         201    273       72
+  Extract Numeric Features Part 1 workstation         249    418      169
+  Extract Text Features Part 1   cloud_cpu           249    488      239
+  Extract Image Features Part 1  cloud_gpu_2         268    708      440
+  Extract Text Features Part 0   cloud_gpu_2         273    450      177
+  Extract Image Features Part 0  cloud_gpu_1         273    565      292
+  Extract Numeric Features Part 0 cloud_cpu           274    357       83
+  Fuse Features Part 0           cloud_gpu_2         565    709      144
+  Fuse Features Part 1           workstation         708    797       89
+  Train Model Part 0 Fold 1      cloud_gpu_1         709   1143      434
+  Train Model Part 0 Fold 4      cloud_gpu_2         721   1218      497
+  Train Model Part 1 Fold 1      cloud_cpu           797   1476      679
+  Train Model Part 1 Fold 3      cloud_gpu_1        1143   1797      654
+  Train Model Part 1 Fold 2      cloud_gpu_2        1218   1636      418
+  Evaluate Model Part 1 Fold 1   cloud_cpu          1536   1637      101
+  Evaluate Model Part 0 Fold 4   workstation        1558   1798      240
+  Train Model Part 0 Fold 0      cloud_gpu_2        1636   1996      360
+  Evaluate Model Part 1 Fold 2   cloud_cpu          1796   2028      232
+  Train Model Part 1 Fold 4      cloud_gpu_1        1797   2492      695
+  Train Model Part 0 Fold 3      cloud_gpu_2        1996   2775      779
+  Train Model Part 0 Fold 2      cloud_cpu          2161   2493      332
+  Train Model Part 1 Fold 0      cloud_gpu_1        2492   2809      317
+  Evaluate Model Part 0 Fold 0   workstation        2567   2810      243
+  Evaluate Model Part 0 Fold 1   workstation        2568   2789      221
+  Evaluate Model Part 1 Fold 4   laptop             2574   2810      236
+  Evaluate Model Part 1 Fold 3   workstation        2614   2810      196
+  Evaluate Model Part 0 Fold 3   cloud_cpu          2775   2934      159
+  Evaluate Model Part 0 Fold 2   workstation        2809   2914      105
+  Evaluate Model Part 1 Fold 0   cloud_cpu          2809   2934      125
+  Ensemble Predictions           cloud_cpu          2934   3148      214
+  ----------------------------------------------------------------------
+
+[progress] Finished workflow 2/5: syn_ml-pipeline-035 in 7.61s
+
+==========================================================================================
+[progress] Running workflow 3/5: syn_ml-pipeline-046 (46 nodes, 60 edges, 5 workers)
+==========================================================================================
+[solver] Solving task 'syn_ml-pipeline-046' (46 nodes, 60 edges, 5 workers, LB=1976, UB=12780) ...
+[solver] Task 'syn_ml-pipeline-046': optimal makespan = 2860 (solved in 27.2846s)
+
+  Schedule for task: syn_ml-pipeline-046  (makespan = 2860, lower bound = 1976)
+  ----------------------------------------------------------------------
+  Node                           Worker            Start    End Duration
+  ----------------------------------------------------------------------
+  Load Data Part 0               cloud_gpu_2           0     93       93
+  Load Data Part 1               workstation           1     68       67
+  Load Data Part 2               cloud_gpu_1           2     55       53
+  Clean Data Part 2              cloud_gpu_1          55    172      117
+  Clean Data Part 1              cloud_cpu            87    198      111
+  Clean Data Part 0              cloud_gpu_1          93    159       66
+  Impute Missing Part 0          laptop              159    275      116
+  Impute Missing Part 2          cloud_gpu_2         197    264       67
+  Impute Missing Part 1          cloud_gpu_1         263    348       85
+  Extract Image Features Part 2  cloud_gpu_1         264    715      451
+  Extract Image Features Part 0  cloud_gpu_2         275    587      312
+  Extract Text Features Part 0   cloud_cpu           373    586      213
+  Extract Text Features Part 1   cloud_gpu_2         404    736      332
+  Extract Text Features Part 2   workstation         405    586      181
+  Extract Numeric Features Part 0 cloud_gpu_1         415    586      171
+  Extract Numeric Features Part 2 laptop              586    720      134
+  Fuse Features Part 0           cloud_gpu_1         587    715      128
+  Extract Image Features Part 1  cloud_gpu_2         588    900      312
+  Train Model Part 0 Fold 2      cloud_gpu_1         715   1482      767
+  Train Model Part 0 Fold 0      workstation         716   1282      566
+  Extract Numeric Features Part 1 laptop              720    900      180
+  Train Model Part 0 Fold 3      cloud_cpu           721   1491      770
+  Train Model Part 0 Fold 1      cloud_gpu_2         900   1679      779
+  Fuse Features Part 1           laptop             1142   1282      140
+  Train Model Part 1 Fold 3      workstation        1282   1796      514
+  Fuse Features Part 2           laptop             1283   1419      136
+  Train Model Part 2 Fold 1      cloud_gpu_1        1482   2082      600
+  Train Model Part 1 Fold 1      cloud_cpu          1491   2128      637
+  Evaluate Model Part 0 Fold 3   laptop             1641   1797      156
+  Train Model Part 2 Fold 2      cloud_gpu_2        1679   2472      793
+  Train Model Part 2 Fold 3      workstation        1796   2163      367
+  Train Model Part 2 Fold 0      cloud_gpu_1        2082   2575      493
+  Train Model Part 1 Fold 0      cloud_cpu          2128   2501      373
+  Evaluate Model Part 0 Fold 1   laptop             2129   2308      179
+  Train Model Part 1 Fold 2      workstation        2163   2529      366
+  Evaluate Model Part 2 Fold 3   laptop             2308   2520      212
+  Evaluate Model Part 2 Fold 2   cloud_gpu_2        2472   2675      203
+  Evaluate Model Part 2 Fold 1   cloud_gpu_2        2473   2683      210
+  Evaluate Model Part 1 Fold 1   cloud_gpu_2        2474   2704      230
+  Evaluate Model Part 0 Fold 2   cloud_cpu          2501   2690      189
+  Evaluate Model Part 1 Fold 0   cloud_cpu          2520   2648      128
+  Evaluate Model Part 0 Fold 0   laptop             2520   2690      170
+  Evaluate Model Part 1 Fold 2   workstation        2529   2704      175
+  Evaluate Model Part 1 Fold 3   cloud_gpu_2        2530   2683      153
+  Evaluate Model Part 2 Fold 0   workstation        2575   2704      129
+  Ensemble Predictions           workstation        2704   2860      156
+  ----------------------------------------------------------------------
+
+[progress] Finished workflow 3/5: syn_ml-pipeline-046 in 27.29s
+
+==========================================================================================
+[progress] Running workflow 4/5: syn_ml-pipeline-052 (52 nodes, 69 edges, 5 workers)
+==========================================================================================
+[solver] Solving task 'syn_ml-pipeline-052' (52 nodes, 69 edges, 5 workers, LB=2159, UB=14892) ...
+[solver] Task 'syn_ml-pipeline-052': no solution found (result=unknown) (solved in 301.0745s).
+[progress] Finished workflow 4/5: syn_ml-pipeline-052 in 301.09s
+
+==========================================================================================
+[progress] Running workflow 5/5: syn_ml-pipeline-069 (69 nodes, 92 edges, 5 workers)
+==========================================================================================
+[solver] Solving task 'syn_ml-pipeline-069' (69 nodes, 92 edges, 5 workers, LB=2021, UB=19601) ...
+[solver] Task 'syn_ml-pipeline-069': no solution found (result=unknown) (solved in 301.8112s).
+[progress] Finished workflow 5/5: syn_ml-pipeline-069 in 301.84s
+
+==================================================================================
+  SCHEDULING SUMMARY
+==================================================================================
+  Task                                     Makespan       LB      Gap     Time (s)
+  ------------------------------------------------------------------------------
+  syn_ml-pipeline-027                          2385     1870     +515       0.6488
+  syn_ml-pipeline-035                          3148     1922    +1226       7.6132
+  syn_ml-pipeline-046                          2860     1976     +884      27.2937
+  syn_ml-pipeline-052                       TIMEOUT        -        -     301.0892
+  syn_ml-pipeline-069                       TIMEOUT        -        -     301.8436
+==================================================================================
